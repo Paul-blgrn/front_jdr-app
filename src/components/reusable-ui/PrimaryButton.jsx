@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export default function PrimaryButton() {
+export default function PrimaryButton({ label, Icon, onClick=()=>{} }) {
   return (
     <PrimaryButtonStyled className="buttonContainer" onClick={onClick}>
         <span>{label}</span>
@@ -23,6 +23,7 @@ const PrimaryButtonStyled = styled.button`
     white-space: nowrap;
     cursor: pointer;
     line-height: 1;
+    margin-bottom: 5px;
 
     &:hover:not(:disabled) {
         background: white;
