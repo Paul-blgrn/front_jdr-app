@@ -1,74 +1,36 @@
-import { useState, useEffect  } from 'react';
+import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { theme } from '../../../theme/index';
-import PrimaryButton from '../../reusable-ui/PrimaryButton';
-import TextInput from '../../reusable-ui/TextInput';
+import { theme } from '../../../../theme/index';
+import PrimaryButton from '../../../reusable-ui/PrimaryButton';
+import TextInput from '../../../reusable-ui/TextInput';
 import { IoChevronForward } from 'react-icons/io5';
 import { BsPersonCircle } from 'react-icons/bs';
-import API from '../../../services/API';
-import { deleteAllCookies, deleteCookie, getCookie, getCsrfCookie } from '../../../utils/cookieManager';
+import { registerUser } from '../../../../actions/userActions';
+import { DEBUG } from '../../../../config/debug';
 
 export default function RegisterForm() {
     const [nameValue, setNameValue] = useState("");
     const [emailValue, setEmailValue] = useState("");
     const [passValue, setPassValue] = useState("");
     const [passConfirmValue, setPassConfirmValue] = useState("");
+
+    const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const handleChangeName = (event) => {
-        setNameValue(event.target.value);
-    }
+    const { isLoggedIn, loading, error } = useSelector(state => state.user);
 
-    const handleChangeEmail = (event) => {
-        setEmailValue(event.target.value);
-    }
-
-    const handleChangePass = (event) => {
-        setPassValue(event.target.value);
-    }
-
-    const handleChangePassConfirm = (event) => {
-        setPassConfirmValue(event.target.value);
-    }
+    const handleChangeName = (event) => setNameValue(event.target.value);
+    const handleChangeEmail = (event) => setEmailValue(event.target.value);
+    const handleChangePass = (event) => setPassValue(event.target.value);
+    const handleChangePassConfirm = (event) => setPassConfirmValue(event.target.value);
 
     const handleRegister = async (event) => {
         event.preventDefault();
-        console.log("Register button clicked");
-
-        const xsrfToken = getCookie('XSRF-TOKEN');
-        console.log('XSRF-TOKEN:', xsrfToken);
-
-        try {
-            // Premièrement, obtenez le cookie CSRF
-            // await API.get('/sanctum/csrf-cookie');
-            await getCsrfCookie();
-
-            // const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-            const xsrfToken = getCookie('XSRF-TOKEN');
-            console.log('XSRF-TOKEN:', xsrfToken);
-
-            // Ensuite, envoyez la requête d'enregistrement
-            const response = await API.post('/register', {
-                name: nameValue,
-                email: emailValue,
-                password: passValue,
-                password_confirmation: passConfirmValue,
-            }, {
-                withCredentials: true,
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-XSRF-TOKEN': xsrfToken,
-                },
-            });
-
-            console.log("Registration response received:", response);
-            console.log("Registration successful");
-            deleteAllCookies('127.0.0.1', '/');
-            navigate("/");
-        } catch (error) {
-            console.error('Error details:', error.response?.data || error.message);
-        }
+        dispatch(registerUser(nameValue, emailValue, passValue, passConfirmValue))
+            .then(() => navigate('/'))
+            .catch((err) => console.error(err.message));
     };
 
     return (
@@ -87,7 +49,7 @@ const RegisterFormStyled = styled.form`
     max-width: 500px;
     min-width: 400px;
     margin: 0px auto;
-    padding: 40px ${theme.spacing.lg};
+    padding: 10px ${theme.spacing.lg};
     border-radius: ${theme.borderRadius.round};
     font-family: "Pacifico", sans-serif;
 

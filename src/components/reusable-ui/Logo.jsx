@@ -4,9 +4,8 @@ import { theme } from "../../theme";
 export default function Logo() {
   return (
     <LogoStyled>
-        <img src="/images/logo.png" alt="logo jdr_app"/>
-        <h1>Grimoire Tales</h1>
-        <p>Votre application de gestion de JDR</p>
+        <img src="/images/logo_app_white.png" alt="logo jdr_app" />
+        <h2>Votre gestionnaire de JDR</h2>
     </LogoStyled>
   )
 }
@@ -25,15 +24,16 @@ flex-direction: column;
   }
 
 
-h1 {
+h2 {
     text-align: center;
     color: ${theme.colors.primary};
-    font-size: ${theme.fonts.size.P5};
+    font-size: ${theme.fonts.size.P4};
     line-height: 1em;
     font-weight: ${theme.fonts.weights.bold};
     text-transform: uppercase;
-    letter-spacing: 1.5px;
+    letter-spacing: 0.2px;
     font-family: "OpenSans", sans-serif;
+    margin-top: -50px;
 }
 
 p {
@@ -50,7 +50,7 @@ p {
 img {
     object-fit: cover;
     object-position: center;
-    height: 140px;
+    height: 340px;
     margin: 0 5px;
 }
 `;

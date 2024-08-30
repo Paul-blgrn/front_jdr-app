@@ -6,18 +6,28 @@ import reportWebVitals from './reportWebVitals.js';
 
 import { BrowserRouter } from 'react-router-dom'
 
+import { Provider as ReduxProvider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
+import { store, persistor } from './store/configureStore'
+
 import { ThemeProvider } from 'styled-components'
 import { theme } from './theme/index.js'
 
+import { UserProvider } from './providers/UserProvider.jsx';
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <ThemeProvider theme={theme}>
-        <App />
-      </ThemeProvider>
-    </BrowserRouter>
-  </React.StrictMode>
+  <BrowserRouter>
+    <ReduxProvider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+        <ThemeProvider theme={theme}>
+          <UserProvider>
+            <App />
+          </UserProvider>
+        </ThemeProvider>
+      </PersistGate>
+    </ReduxProvider>
+  </BrowserRouter>
 );
 
 // If you want to start measuring performance in your app, pass a function

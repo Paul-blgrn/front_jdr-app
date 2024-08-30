@@ -1,4 +1,3 @@
-const packageJson = require('../../package.json');
-const DEBUG = packageJson.debug || false;
+const DEBUG = process.env.REACT_APP_DEBUG === 'true';
 
 export { DEBUG };

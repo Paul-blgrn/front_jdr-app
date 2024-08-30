@@ -1,16 +1,21 @@
+import { useNavigate } from "react-router-dom"
+
 import styled from "styled-components";
 import { theme } from "../../theme";
 
-export default function PrimaryButton({ label, Icon, onClick=()=>{} }) {
+import { BsHouseDoorFill } from "react-icons/bs";
+
+export default function HomeButton() {
+    const navigate = useNavigate();
+    const redirectHome = (event) => navigate('/');
   return (
-    <PrimaryButtonStyled className="buttonContainer" onClick={onClick}>
-        <span>{label}</span>
-        <span className="icon">{Icon && Icon}</span>
-    </PrimaryButtonStyled>
+    <HomeButtonStyled className="homeButtonContainer" onClick={redirectHome} title="Accueil">
+        <span className="icon"><BsHouseDoorFill className="iconHome"/></span>
+    </HomeButtonStyled>
   )
 }
 
-const PrimaryButtonStyled = styled.button`
+const HomeButtonStyled = styled.button`
     background: #63a5aa;
     border: 1px solid #63a5aa;
     border-radius: 5px;
@@ -23,6 +28,7 @@ const PrimaryButtonStyled = styled.button`
     white-space: nowrap;
     cursor: pointer;
     line-height: 1;
+
     margin-bottom: 5px;
     margin-left: 2px;
     margin-right: 2px;
@@ -40,6 +46,7 @@ const PrimaryButtonStyled = styled.button`
         transition: all 0.3s ease-in-out;
         /* transform: scale(1.05); */
     }
+
     &:active {
         color: white;
         background: #63a5aa;
@@ -50,12 +57,4 @@ const PrimaryButtonStyled = styled.button`
         opacity: 0.6;
         cursor: not-allowed;
     }
-
-    .icon {
-        vertical-align: middle;
-        justify-content: center;
-        align-items: center;
-        font-size: ${theme.fonts.size.P0};
-        margin-left: 10px;
-    }
-`;
+`
