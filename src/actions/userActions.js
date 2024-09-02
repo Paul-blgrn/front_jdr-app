@@ -38,12 +38,16 @@ export const registerUser = (name, email, password, passwordConfirmation) => asy
       withCredentials: true,
     });
     if (response.status === 200 || response.status === 204) {
-      const user = response.data.user || null;
+      const {authenticated, user, token} = response.data;
       if (DEBUG) console.log('[redux-action]: Registration response:', response);
       if (DEBUG) console.log('[redux-action]: Registration user:', user);
       dispatch({ 
         type: REGISTER_USER_SUCCESS, 
         payload: { user },
+      });
+      dispatch({
+        type: SET_BEARER_TOKEN,
+        payload: { token },
       });
       if (DEBUG) console.log('[redux-action]: Registration successful !');
     } else {

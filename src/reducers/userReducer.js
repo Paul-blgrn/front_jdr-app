@@ -35,7 +35,7 @@ const userReducer = (state = initialState, action) => {
         case REGISTER_USER_REQUEST:
             return { ...state, loading: true, error: null };
         case REGISTER_USER_SUCCESS:
-            return { ...state, loading: false, user: action.payload.user || state.user, isLoggedIn: true };
+            return { ...state, loading: false, user: action.payload.user, isLoggedIn: true };
         case REGISTER_USER_FAILURE:
             return { ...state, loading: false, error: action.payload };
         case CHECK_SERVER_STATUS:

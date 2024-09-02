@@ -15,6 +15,7 @@ export default function RegisterForm() {
     const [emailValue, setEmailValue] = useState("");
     const [passValue, setPassValue] = useState("");
     const [passConfirmValue, setPassConfirmValue] = useState("");
+    const [errorMessage, setErrorMessage] = useState("");
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -26,8 +27,45 @@ export default function RegisterForm() {
     const handleChangePass = (event) => setPassValue(event.target.value);
     const handleChangePassConfirm = (event) => setPassConfirmValue(event.target.value);
 
+    const validatePassword = (password) => {
+        const minLength = 8;
+        const hasLetters = /[a-zA-Z]/.test(password);
+        const hasMixedCase = /[a-z]/.test(password) && /[A-Z]/.test(password);
+        const hasNumbers = /\d/.test(password);
+        const hasSymbols = /[!@#$%^&*(),.?":{}|<>-_]/.test(password);
+
+        if (password.length < minLength) {
+            return `Le mot de passe doit contenir au moins ${minLength} caractères.`;
+        }
+        if (!hasLetters) {
+            return "Le mot de passe doit contenir au moins une lettre.";
+        }
+        if (!hasMixedCase) {
+            return "Le mot de passe doit contenir des majuscules et des minuscules.";
+        }
+        if (!hasNumbers) {
+            return "Le mot de passe doit contenir au moins un chiffre.";
+        }
+        if (!hasSymbols) {
+            return "Le mot de passe doit contenir au moins un symbole.";
+        }
+        return null;
+    };
+
     const handleRegister = async (event) => {
         event.preventDefault();
+        const passwordError = validatePassword(passValue);
+
+        if (passwordError) {
+            setErrorMessage(passwordError);
+            return;
+        }
+
+        if (passValue !== passConfirmValue) {
+            setErrorMessage("Les mots de passe ne correspondent pas.");
+            return;
+        }
+
         dispatch(registerUser(nameValue, emailValue, passValue, passConfirmValue))
             .then(() => navigate('/'))
             .catch((err) => console.error(err.message));
@@ -35,6 +73,7 @@ export default function RegisterForm() {
 
     return (
         <RegisterFormStyled onSubmit={handleRegister}>
+            {errorMessage && <p className="error">{errorMessage}</p>}
             <TextInput value={nameValue} onChange={handleChangeName} placeholder={"Entrez votre prénom"} required Icon={<BsPersonCircle className="icon" />} />
             <TextInput value={emailValue} onChange={handleChangeEmail} placeholder={"Entrez votre email"} required Icon={<BsPersonCircle className="icon" />} />
             <TextInput type="password" value={passValue} onChange={handleChangePass} placeholder={"Entrez votre mot de passe"} required Icon={<BsPersonCircle className="icon" />} />
@@ -75,5 +114,10 @@ const RegisterFormStyled = styled.form`
         align-items: center;
         font-size: ${theme.fonts.size.P0};
         margin-left: 10px;
+    }
+
+    .error {
+        color: red;
+        margin-bottom: 10px;
     }
 `;
