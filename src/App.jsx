@@ -4,10 +4,11 @@ import { checkAuth } from './actions/userActions';
 
 import { Routes, Route } from 'react-router-dom'
 
-import MainPage from './components/pages/homepage/Main'
 import LoginPage from './components/pages/login/Login'
 import ErrorPage from './components/pages/error/ErrorPage'
 import ReadBoard from './components/pages/boards/ReadBoard'
+import DetailBoard from './components/pages/board/ReadBoard'
+import Templates from './components/pages/templates/Main'
 
 function App() {
   const dispatch = useDispatch();
@@ -20,6 +21,8 @@ function App() {
     <Routes>
       <Route path="/" element={<LoginPage />}/>
       <Route path="/boards" element={<ReadBoard />}/>
+      <Route path="/board/:id" element={<DetailBoard />}/>
+      <Route path="/templates" element={<Templates />}/>
       <Route path="*" element={<ErrorPage />}/>
     </Routes>
   );

@@ -7,6 +7,8 @@ import PrimaryButton from '../../../reusable-ui/PrimaryButton';
 import TextInput from '../../../reusable-ui/TextInput';
 import { IoChevronForward } from 'react-icons/io5';
 import { BsPersonCircle } from 'react-icons/bs';
+import { RiLockPasswordLine } from "react-icons/ri";
+import { MdAlternateEmail } from "react-icons/md";
 import { registerUser } from '../../../../actions/userActions';
 import { DEBUG } from '../../../../config/debug';
 
@@ -75,10 +77,10 @@ export default function RegisterForm() {
         <RegisterFormStyled onSubmit={handleRegister}>
             {errorMessage && <p className="error">{errorMessage}</p>}
             <TextInput value={nameValue} onChange={handleChangeName} placeholder={"Entrez votre prénom"} required Icon={<BsPersonCircle className="icon" />} />
-            <TextInput value={emailValue} onChange={handleChangeEmail} placeholder={"Entrez votre email"} required Icon={<BsPersonCircle className="icon" />} />
-            <TextInput type="password" value={passValue} onChange={handleChangePass} placeholder={"Entrez votre mot de passe"} required Icon={<BsPersonCircle className="icon" />} />
-            <TextInput type="password" value={passConfirmValue} onChange={handleChangePassConfirm} placeholder={"Confirmez votre mot de passe"} required Icon={<BsPersonCircle className="icon" />} />
-            <PrimaryButton Icon={<IoChevronForward className="icon" />} label={"S'inscrire"} type="submit" />
+            <TextInput value={emailValue} onChange={handleChangeEmail} placeholder={"Entrez votre email"} required Icon={<MdAlternateEmail className="icon" />} />
+            <TextInput type="password" value={passValue} onChange={handleChangePass} placeholder={"Entrez votre mot de passe"} required Icon={<RiLockPasswordLine className="icon" />} />
+            <TextInput type="password" value={passConfirmValue} onChange={handleChangePassConfirm} placeholder={"Confirmez votre mot de passe"} required Icon={<RiLockPasswordLine className="icon" />} />
+            <PrimaryButton Icon={<IoChevronForward className="icon" />} label={"Confirmer"} type="submit" />
         </RegisterFormStyled>
     )
 }

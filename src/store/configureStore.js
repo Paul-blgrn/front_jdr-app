@@ -6,14 +6,16 @@ import rootReducer from '../reducers/rootReducer'
 import duplicateRequestMiddleware from '../services/duplicateRequestMiddleware';
   
 
-// Configuration de Redux Persist
+// Configuring Redux Persist
 const persistConfig = {
     key: 'root',
-    storage, // Utiliser le stockage local
-    whitelist: ['user', 'boards', 'token'], // Liste des réducteurs que vous souhaitez persister
+    // Storage you want to use : [storage, sessionStorage or customStorage]
+    storage,
+    // List of reducers you want to persist
+    whitelist: ['user', 'boards', 'board_details', 'token'],
 };
 
-// Créer un reducer persistant
+// Create a persistent reducer
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 const loggerMiddleware = store => next => action => {
@@ -21,12 +23,13 @@ const loggerMiddleware = store => next => action => {
     return next(action);
 };
 
+// Create the store
 const store = createStore(
     persistedReducer, 
     applyMiddleware(thunk, duplicateRequestMiddleware, loggerMiddleware)
 );
 
-// Créer le persistor pour persister le store
+// Create the persistor to persist the store
 const persistor = persistStore(store);
 
 export { store, persistor };

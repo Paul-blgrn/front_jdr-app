@@ -1,16 +1,14 @@
 import axios from 'axios';
-import { deleteAllCookies } from '../utils/cookieManager';
-import { logoutUser } from '../actions/userActions';
+// import { deleteAllCookies } from '../utils/cookieManager';
+// import { logoutUser } from '../actions/userActions';
 
 import { store } from '../store/configureStore';
-import { useDispatch } from 'react-redux';
-
 import { DEBUG } from '../config/debug';
 
 const pendingRequests = new Map();
 
 const API = axios.create({
-    baseURL: 'http://localhost:8000',
+    baseURL: process.env.REACT_APP_API_URL,
     timeout: 5000,
     withCredentials: true,
     headers: {
@@ -21,37 +19,38 @@ const API = axios.create({
     },
 });
 
-// Génère une clé unique pour chaque requête en utilisant l'URL, les paramètres, et les données
+// Generates a unique key for each request using URL, parameters, and data
 function generateRequestKey(config) {
     const { method, url, params, data } = config;
     return [method, url, JSON.stringify(params), JSON.stringify(data)].join('|');
 }
 
-// Intercepteur de requête
+// Request interceptor
 API.interceptors.request.use(
     config => {
         const requestKey = generateRequestKey(config);
         console.log(`[REQUEST API] Checking request key: ${requestKey}`);
 
-        // Vérification de la requête en cours
+        // Check the current request
         if (pendingRequests.has(requestKey)) {
-            // Requête déjà en cours, on annule
+            // Request already in progress, cancel
             if (DEBUG) console.log(`[REQUEST API] Duplicate request detected: ${requestKey}`);
             return Promise.reject({ message: 'Duplicate request', config });
         }
 
-        // Ajout du token CSRF pour les méthodes sensibles
+        // Added CSRF token for sensitive methods
         const methodsToProtect = ['post', 'put', 'delete', 'patch'];
         const token = getCookie('XSRF-TOKEN');
 
         if (methodsToProtect.includes(config.method) && token) {
-            config.headers['X-XSRF-TOKEN'] = token; // Ajouter automatiquement le token CSRF si disponible
+            // Automatically add the XSRF token if available
+            config.headers['X-XSRF-TOKEN'] = token;
         }
 
-        // Ajout du token d'authentification
+        // Adding the authentication token
         config.headers['Authorization'] = `Bearer ${store.getState().token.token}`;
 
-        // Ajout de la requête à la liste des requêtes en cours
+        // Adding the query to the list of current queries
         pendingRequests.set(requestKey, config);
         return config;
     },
@@ -60,19 +59,19 @@ API.interceptors.request.use(
     }
 );
 
-// Intercepteur de réponse
+// Response Interceptor
 API.interceptors.response.use(
     (response) => {
         const requestKey = generateRequestKey(response.config);
         console.log(`[RESPONSE API] Removing request key: ${requestKey}`);
-        // Suppression de la requête de la liste une fois terminée
+        // Remove the query from the list once completed
         pendingRequests.delete(requestKey);
         return response;
     },
     (error) => {
         const requestKey = generateRequestKey(error.config || {});
         console.log(`[RESPONSE ERROR] Removing request key: ${requestKey}`);
-        // Suppression de la requête de la liste en cas d'erreur
+        // Removing the query from the list on error
         pendingRequests.delete(requestKey);
         return Promise.reject(error);
     }
@@ -120,16 +119,6 @@ API.getCsrfToken = async () => {
 //     }
 // );
 
-function setCookie(name, value, days) {
-    var expires = "";
-    if (days) {
-        var date = new Date();
-        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-        expires = "; expires=" + date.toUTCString();
-    }
-    document.cookie = name + "=" + (value || "") + expires + "; path=/";
-}
-
 function getCookie(name) {
     if (typeof name !== 'string' || name.trim() === '') {
         throw new Error('Le nom du cookie doit être une chaîne non vide.');
@@ -147,10 +136,10 @@ function getCookie(name) {
     return null;
 }
 
-const handleLogout = async () => {
-    deleteAllCookies('127.0.0.1', '/');
-    store.dispatch(logoutUser());
-    console.info('[API]: User tokens and cookies have been removed.');
-};
+// const handleLogout = async () => {
+//     deleteAllCookies('127.0.0.1', '/');
+//     store.dispatch(logoutUser());
+//     console.info('[API]: User tokens and cookies have been removed.');
+// };
 
 export default API;

@@ -12,4 +12,7 @@ export default createContext({
 
     isJoiningBoard: false,
     setIsJoiningBoard: () => {},
+
+    isEditingTemplate: false,
+    setIsEditingTemplate: () => {},
 })

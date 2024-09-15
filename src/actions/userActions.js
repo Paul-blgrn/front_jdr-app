@@ -17,6 +17,8 @@ import {
   SET_BEARER_TOKEN,
   REQUEST_BEARER_TOKEN_CLEAN,
   CHECKAUTH_USER_REQUEST,
+  CLEAR_BOARDS,
+  CLEAR_BOARD_DETAILS,
 } from './actionTypes';
 
 const getUserFromCookie = () => {
@@ -108,6 +110,8 @@ export const logoutUser = () => async (dispatch) => {
         await API.post('/logout', {}, { withCredentials: true });
         dispatch({ type: LOGOUT_USER });
         dispatch({ type: REQUEST_BEARER_TOKEN_CLEAN });
+        dispatch({ type: CLEAR_BOARDS });
+        dispatch({ type: CLEAR_BOARD_DETAILS });
         persistor.purge().then(() => {
             console.log('[redux-action]: Redux-persist storage purged');
         }).catch(error => {

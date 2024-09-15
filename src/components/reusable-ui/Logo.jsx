@@ -11,16 +11,18 @@ export default function Logo() {
 }
 
 const LogoStyled = styled.div`
-display: flex;
-align-items: center;
-flex-direction: column;
+  display: grid;
+  place-items: center;
 
-@media (min-width: 768px) {
-    // transform: scale(2.5);
+  @media (min-width: 768px) {
+    padding-top: 40px; /* Add more space for larger screens */
   }
 
-  @media (min-width: 400px) and (max-width: 768px) {
-    //transform: scale(1.5);
+  @media (max-width: 768px) {
+    padding-top: 10px; /* Adjust for smaller screens */
+    img {
+      height: 200px; /* Make logo smaller on smaller screens */
+    }
   }
 
 

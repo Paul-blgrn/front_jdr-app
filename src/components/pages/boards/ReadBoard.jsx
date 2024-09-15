@@ -5,14 +5,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from "react-router-dom"
 import styled, { keyframes, css } from "styled-components";
 import { theme } from "../../../theme";
-import Logo from "../../reusable-ui/Logo";
-import { IoChevronForward } from 'react-icons/io5';
-import PrimaryButton from "../../reusable-ui/PrimaryButton";
 
-import HomeButton from '../../reusable-ui/HomeButton';
-import DisconnectButton from '../../reusable-ui/DisconnectButton';
+import { IoAddCircleSharp } from "react-icons/io5";
+
+import Logo from "../../reusable-ui/Logo";
 import CreateBoard from './CreateBoard';
 import JoinBoard from './JoinBoard';
+import MainMenu from '../nav/MainMenu'
+import IconButton from '../../reusable-ui/IconButton'
 
 import { getBoards, getCreatedBoards, getJoinedBoards } from '../../../actions/boardActions';
 import PaginateBoards from './PaginateBoards';
@@ -86,7 +86,9 @@ export default function ReadBoard() {
     dispatch(getJoinedBoards(currentJoinedPage));
   }, [dispatch, currentJoinedPage]);
 
-  //console.log('board const = ', board);
+  const handleBoardClick = (boardId) => {
+    navigate(`/board/${boardId}`);
+  };
 
   const handlePageChange = (type, direction) => {
     if (type === 'created') {
@@ -107,19 +109,18 @@ export default function ReadBoard() {
   return (
     <BoardsStyled>
       <Logo />
+      <MainMenu />
       <div className='boardButton'>
-        <HomeButton />
-        <PrimaryButton 
-          label={'Créer un Board'}
-          Icon={<IoChevronForward />}
+        <IconButton 
+          Icon={<IoAddCircleSharp />}
+          Label={'Créer un Board'}
           onClick={handleToggleCreateForm}
         />
-        <PrimaryButton 
-          label={'Rejoindre un Board'}
-          Icon={<IoChevronForward />}
+        <IconButton 
+          Icon={<IoAddCircleSharp />}
+          Label={'Rejoindre un Board'}
           onClick={handleToggleJoinForm}
         />
-        <DisconnectButton />
       </div>
       <div className='boardForms'>
         {isCreateFormOpen && (
@@ -152,7 +153,7 @@ export default function ReadBoard() {
               <h2 className='loading-board'>Chargement...</h2>
             ) : created_boards.length > 0 ? (
               created_boards.map((board) => (
-                <div key={board.id} className='board-card'>
+                <div key={board.id} className='board-card' onClick={() => handleBoardClick(board.id)}>
                   <h2 className='board-name'>{board.name}</h2>
                   <p className='board-description'>{board.description}</p>
                   <p className='board-capacity'>{board.users_count}/{board.capacity}</p>
@@ -181,7 +182,7 @@ export default function ReadBoard() {
               <h2 className='loading-board'>Chargement...</h2>
             ) : joined_boards.length > 0 ? (
               joined_boards.map((board) => (
-                <div key={board.id} className='board-card'>
+                <div key={board.id} className='board-card' onClick={() => handleBoardClick(board.id)}>
                   <h2 className='board-name'>{board.name}</h2>
                   <p className='board-description'>{board.description}</p>
                   <p className='board-capacity'>{board.users_count}/{board.capacity}</p>

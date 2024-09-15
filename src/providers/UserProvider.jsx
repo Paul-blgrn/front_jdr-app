@@ -5,6 +5,7 @@ export const UserProvider = ({ children }) => {
 
     const [isRegistering, setIsRegistering] = useState(false);
     const [isModeAdmin, setIsModeAdmin] = useState(false);
+    const [isEditingTemplate, setIsEditingTemplate] = useState(false);
     
     const [isCreatingBoard, setIsCreatingBoard] = useState(false);
     const [isJoiningBoard, setIsJoiningBoard] = useState(false);
@@ -18,6 +19,8 @@ export const UserProvider = ({ children }) => {
         setIsJoiningBoard,
         isModeAdmin,
         setIsModeAdmin,
+        isEditingTemplate,
+        setIsEditingTemplate,
     }
 
     return (

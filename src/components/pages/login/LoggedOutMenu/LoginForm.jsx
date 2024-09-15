@@ -7,6 +7,7 @@ import PrimaryButton from "../../../reusable-ui/PrimaryButton";
 import TextInput from "../../../reusable-ui/TextInput";
 import { IoChevronForward } from "react-icons/io5";
 import { BsPersonCircle } from "react-icons/bs";
+import { RiLockPasswordLine } from "react-icons/ri";
 import { loginUser } from '../../../../actions/userActions';
 import { DEBUG } from '../../../../config/debug';
 
@@ -44,11 +45,11 @@ export default function LoginForm() {
                 onChange={handleChangePass}
                 placeholder="Entrez votre mot de passe"
                 required
-                Icon={<BsPersonCircle className="icon" />}
+                Icon={<RiLockPasswordLine className="icon" />}
             />
             <PrimaryButton 
                 Icon={<IoChevronForward />} 
-                label={loading ? "Connexion..." : "Se Connecter"}
+                label={loading ? "Connexion..." : "Confirmer"}
             />
         </LoginFormStyled>
     );
@@ -85,6 +86,11 @@ const LoginFormStyled = styled.form`
         align-items: center;
         font-size: ${theme.fonts.size.P0};
         margin-left: 10px;
+    }
+
+    .loginButton {
+        background-color: ${theme.colors.primary};
+        border: 1px solid ${theme.colors.primary};
     }
 `;
 

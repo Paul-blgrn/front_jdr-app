@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { theme } from '../../../../theme';
 import Logo from "../../../reusable-ui/Logo";
 
-import PrimaryButton from '../../../reusable-ui/PrimaryButton';
+import SecondaryButton from '../../../reusable-ui/SecondaryButton'
 import { IoChevronForward } from 'react-icons/io5';
 
 import LoginForm from "./LoginForm"
@@ -31,8 +31,8 @@ export default function Main() {
             {isRegistering ? (
                 <>
                     <RegisterForm />
-                    <PrimaryButton 
-                        label={"Se Connecter"} 
+                    <SecondaryButton 
+                        label={"Connexion"} 
                         Icon={<IoChevronForward/>} 
                         onClick={toggleForm} 
                     />
@@ -40,8 +40,8 @@ export default function Main() {
             ) : (
                 <>
                     <LoginForm />
-                    <PrimaryButton 
-                        label={"S'inscrire"} 
+                    <SecondaryButton 
+                        label={"Inscription"} 
                         Icon={<IoChevronForward/>} 
                         onClick={toggleForm} 
                     />
@@ -52,7 +52,7 @@ export default function Main() {
 }
 
 const LoggedOutPageStyled = styled.div`
-    height: 100vh;
+    max-height: 100vh;
     max-width: 800px;
     min-width: 400px;
     margin: 0px auto;
@@ -70,11 +70,4 @@ const LoggedOutPageStyled = styled.div`
         margin: 0;
     }
 
-    h1 {
-      color: white;
-    }
-
-    &:hover {
-        color: ${theme.colors.primary};
-    }
 `;

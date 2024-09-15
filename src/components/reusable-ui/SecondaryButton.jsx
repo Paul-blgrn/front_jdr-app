@@ -1,18 +1,18 @@
 import styled from "styled-components";
 import { theme } from "../../theme";
 
-export default function PrimaryButton({ label, Icon, onClick=()=>{} }) {
+export default function SecondaryButton({ label, Icon, onClick=()=>{} }) {
   return (
-    <PrimaryButtonStyled className="buttonContainer" onClick={onClick}>
+    <SecondaryButtonStyled className="buttonContainer" onClick={onClick}>
         <span>{label}</span>
         <span className="icon">{Icon && Icon}</span>
-    </PrimaryButtonStyled>
+    </SecondaryButtonStyled>
   )
 }
 
-const PrimaryButtonStyled = styled.button`
-    background: ${theme.colors.primary2};
-    border: 1px solid ${theme.colors.primary2};
+const SecondaryButtonStyled = styled.button`
+    background: ${theme.colors.greyMedium};
+    border: 1px solid ${theme.colors.greyDark};
     border-radius: 5px;
     color: white;
     font-size: 18px;
@@ -35,15 +35,15 @@ const PrimaryButtonStyled = styled.button`
 
     &:hover:not(:disabled) {
         background: white;
-        color: ${theme.colors.primary2};
-        border: 1px solid ${theme.colors.primary2};
+        color: ${theme.colors.greyMedium};
+        border: 1px solid ${theme.colors.greyMedium};
         transition: all 0.3s ease-in-out;
         transform: scale(1.05);
     }
     &:active {
         color: white;
-        background: ${theme.colors.primary2};
-        border: 1px solid ${theme.colors.primary2};
+        background: ${theme.colors.greyMedium};
+        border: 1px solid ${theme.colors.greyMedium};
     }
 
     &:disabled {

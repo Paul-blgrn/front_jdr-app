@@ -1,6 +1,4 @@
-import { persistor } from "../store/configureStore";
 import API from "../services/API";
-import Cookies from 'js-cookie';
 import { DEBUG } from "../config/debug";
 
 import {
@@ -20,9 +18,7 @@ import {
     GET_JOINED_BOARDS_SUCCESS,
     GET_JOINED_BOARDS_FAILURE,
 
-    GET_BOARDS_REQUEST,
-    GET_BOARDS_SUCCESS,
-    GET_BOARDS_FAILURE,
+    CLEAR_BOARDS,
 } from "./actionTypes";
 
 export const createBoard = (name, description, capacity) => async (dispatch) => {
@@ -42,7 +38,7 @@ export const createBoard = (name, description, capacity) => async (dispatch) => 
                 type: CREATE_BOARD_SUCCESS,
                 payload: { board },
             })
-            dispatch(getBoards());
+            dispatch(getCreatedBoards());
         } else {
             dispatch({
                 type: CREATE_BOARD_FAILURE,
@@ -69,7 +65,7 @@ export const joinBoard = (code) => async (dispatch) => {
                 type: JOIN_BOARD_SUCCESS,
                 payload: { boards: boards, meta: meta },
             })
-            dispatch(getBoards());
+            dispatch(getJoinedBoards());
         } else {
             dispatch({
                 type: JOIN_BOARD_FAILURE,
@@ -82,32 +78,32 @@ export const joinBoard = (code) => async (dispatch) => {
     }
 };
 
-export const getBoards = (createdPage = 1, joinedPage = 1) => async (dispatch) => {
-    dispatch({ type: GET_BOARDS_REQUEST });
-    try {
-        // Récupérer les boards créés
-        const response = await API.get(`/api/boards?created_page=${createdPage}&joined_page=${joinedPage}`);
-        //console.log('response boards = ', response);
-        //const response = await API.get(`/api/boards?page=${page}`);
-        const { data, meta } = response.data;
-        if (data && meta) {
-            //console.log('[redux-action-boards] response | DATA = ', data, ' META = ', meta);
-            dispatch({
-                type: GET_BOARDS_SUCCESS,
-                payload: { 
-                    created_boards: data.created_boards,
-                    created_boards_meta: meta.created_boards,
-                    joined_boards: data.joined_boards,
-                    joined_boards_meta: meta.joined_boards,
-                },
-            })
-        } else {
-            dispatch({ type: GET_BOARDS_FAILURE });
-        }
-    } catch (error) {
-        dispatch({ type: GET_BOARDS_FAILURE, payload: error.message || '[redux-action-boards]: An error occurred while get boards'});
-    }
-};
+// export const getBoards = (createdPage = 1, joinedPage = 1) => async (dispatch) => {
+//     dispatch({ type: GET_BOARDS_REQUEST });
+//     try {
+//         // Récupérer les boards créés
+//         const response = await API.get(`/api/boards?created_page=${createdPage}&joined_page=${joinedPage}`);
+//         //console.log('response boards = ', response);
+//         //const response = await API.get(`/api/boards?page=${page}`);
+//         const { data, meta } = response.data;
+//         if (data && meta) {
+//             //console.log('[redux-action-boards] response | DATA = ', data, ' META = ', meta);
+//             dispatch({
+//                 type: GET_BOARDS_SUCCESS,
+//                 payload: { 
+//                     created_boards: data.created_boards,
+//                     created_boards_meta: meta.created_boards,
+//                     joined_boards: data.joined_boards,
+//                     joined_boards_meta: meta.joined_boards,
+//                 },
+//             })
+//         } else {
+//             dispatch({ type: GET_BOARDS_FAILURE });
+//         }
+//     } catch (error) {
+//         dispatch({ type: GET_BOARDS_FAILURE, payload: error.message || '[redux-action-boards]: An error occurred while get boards'});
+//     }
+// };
 
 export const getCreatedBoards = (createdPage) => async (dispatch) => {
     dispatch({ type: GET_CREATED_BOARDS_REQUEST });
@@ -162,19 +158,15 @@ export const getJoinedBoards = (joinedPage) => async (dispatch) => {
     }
 };
 
-function getCookie(name) {
-    if (typeof name !== 'string' || name.trim() === '') {
-        throw new Error('Le nom du cookie doit être une chaîne non vide.');
-    }
 
-    const cookieName = encodeURIComponent(name) + "=";
-    const cookies = document.cookie ? document.cookie.split(';') : [];
-
-    for (let i = 0; i < cookies.length; i++) {
-        let cookie = cookies[i].trim();
-        if (cookie.startsWith(cookieName)) {
-            return decodeURIComponent(cookie.substring(cookieName.length));
-        }
+export const clearBoards = () => async (dispatch) => {
+    dispatch({ type: GET_JOINED_BOARDS_REQUEST });
+    try {
+        dispatch({ type: CLEAR_BOARDS });
+    } catch (error) {
+        dispatch({
+            type: GET_JOINED_BOARDS_FAILURE,
+            payload: error.message || '[redux-action-boards]: An error occurred while clearing boards'
+        });
     }
-    return null;
-}
+};
