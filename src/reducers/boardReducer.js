@@ -77,7 +77,7 @@ const boardReducer = (state = initialState, action) => {
                 created_boards: [], 
                 created_boards_meta: {}, 
                 joined_boards: [], 
-                joined_boards_meta: {}, 
+                joined_boards_meta: {} 
             };
         // Default value
         default:
