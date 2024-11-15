@@ -74,9 +74,6 @@ export default function CreateBoard({ onClose }) {
 const CreateBoardStyled = styled.form`
     display: flex;
     flex-direction: column;
-    /* position: relative;
-    right: 15.5rem; */
-
     border: 1px dotted white;
     padding: 10px ${theme.spacing.lg};
     border-radius: ${theme.borderRadius.round};
@@ -95,5 +92,4 @@ const CreateBoardStyled = styled.form`
         font-weight: bold;
         text-align: center;
     }
-
-`
+`;

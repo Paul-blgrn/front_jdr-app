@@ -1,7 +1,7 @@
 import styled from "styled-components";
-import { theme } from "../../../theme";
+// import { theme } from "../../../theme";
 
-import IconButton from "../../reusable-ui/IconActionButton";
+import IconActionButton from "../../reusable-ui/IconActionButton";
 import { MdTableRestaurant } from "react-icons/md";
 import { LuLayoutTemplate } from "react-icons/lu";
 import { IoMdLogOut } from "react-icons/io";
@@ -10,7 +10,7 @@ import { FaHome } from "react-icons/fa";
 import { logoutUser } from "../../../actions/userActions";
 import { useLocation } from "react-router-dom";
 
-import { DEBUG } from '../../../config/debug';
+// import { DEBUG } from '../../../config/debug';
 
 export default function Menu() {
     const location = useLocation();
@@ -26,7 +26,7 @@ export default function Menu() {
             {buttons.map(({ icon, label, link, action }, index) => (
                 // Only render if the current path is not equal to the button's link
                 link !== location.pathname && (
-                    <IconButton
+                    <IconActionButton
                         key={index}
                         Icon={icon}
                         Label={label}
@@ -42,5 +42,7 @@ export default function Menu() {
 const MenuNavStyled = styled.div`
     display: flex;
     flex-direction: row;
+    align-items: center;
+    justify-content: center;
     padding: 10px 5px;
 `;

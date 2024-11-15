@@ -1,6 +1,6 @@
 import { persistor } from "../store/configureStore";
-import API from "../services/API";
-import Cookies from 'js-cookie';
+// import API from "../services/API";
+// import Cookies from 'js-cookie';
 import { DEBUG } from "../config/debug";
 
 import {

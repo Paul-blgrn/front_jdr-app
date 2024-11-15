@@ -1,8 +1,8 @@
-import { useContext, useState, useCallback } from 'react';
+import { useContext, useCallback } from 'react';
 import UserContext from '../../../../context/UserContext';
 
 import styled from "styled-components";
-import { theme } from '../../../../theme';
+// import { theme } from '../../../../theme';
 import Logo from "../../../reusable-ui/Logo";
 
 import SecondaryButton from '../../../reusable-ui/SecondaryButton'
@@ -11,7 +11,7 @@ import { IoChevronForward } from 'react-icons/io5';
 import LoginForm from "./LoginForm"
 import RegisterForm from './RegisterForm';
 
-import { DEBUG } from '../../../../config/debug';
+// import { DEBUG } from '../../../../config/debug';
 
 
 export default function Main() {
@@ -23,7 +23,7 @@ export default function Main() {
           // if (DEBUG) console.log(newIsRegistering);
           return newIsRegistering;
         });
-      }, [setIsRegistering, DEBUG]);
+      }, [setIsRegistering]);
 
     return (
         <LoggedOutPageStyled>

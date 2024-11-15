@@ -21,7 +21,7 @@ const tokenReducer = (state = initialState, action) => {
         case BEARER_TOKEN_FAILURE:
             return {...state, loading: false, error: action.payload};
         case REQUEST_BEARER_TOKEN_CLEAN:
-            return {... state, loading: false, token: null, error: null};
+            return {...state, loading: false, token: null, error: null};
         default:
             return state;
     }

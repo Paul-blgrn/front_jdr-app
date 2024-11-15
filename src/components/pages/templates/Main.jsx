@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { theme } from "../../../theme";
+// import { theme } from "../../../theme";
 
 import Logo from "../../reusable-ui/Logo";
 import MainMenu from '../nav/MainMenu'

@@ -49,18 +49,11 @@ export default function JoinBoard({ onClose }) {
 const JoinBoardStyled = styled.form`
     display: flex;
     flex-direction: column;
-    /* position: relative;
-    right: 8rem; */
 
     border: 1px dotted white;
     padding: 10px ${theme.spacing.lg};
     border-radius: ${theme.borderRadius.round};
     font-family: "Pacifico", sans-serif;
-    
-    ::before {
-        content: none;
-        background: none;
-    }
 
     div {
         display: flex;
@@ -75,5 +68,4 @@ const JoinBoardStyled = styled.form`
         font-weight: bold;
         text-align: center;
     }
-
-`
+`;

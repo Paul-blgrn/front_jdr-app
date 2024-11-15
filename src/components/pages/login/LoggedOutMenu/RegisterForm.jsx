@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { theme } from '../../../../theme/index';
@@ -21,8 +21,6 @@ export default function RegisterForm() {
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
-
-    const { isLoggedIn, loading, error } = useSelector(state => state.user);
 
     const handleChangeName = (event) => setNameValue(event.target.value);
     const handleChangeEmail = (event) => setEmailValue(event.target.value);
@@ -71,6 +69,8 @@ export default function RegisterForm() {
         dispatch(registerUser(nameValue, emailValue, passValue, passConfirmValue))
             .then(() => navigate('/'))
             .catch((err) => console.error(err.message));
+            
+        if (DEBUG) console.log('handleRegister called !');
     };
 
     return (

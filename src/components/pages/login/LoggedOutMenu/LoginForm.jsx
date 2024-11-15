@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect } from 'react'
+import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from "react-router-dom"
 import styled from 'styled-components';
@@ -12,7 +12,7 @@ import { loginUser } from '../../../../actions/userActions';
 import { DEBUG } from '../../../../config/debug';
 
 export default function LoginForm() {
-    const { isLoggedIn, error, loading } = useSelector(state => state.user);
+    const { error, loading } = useSelector(state => state.user);
     const [emailValue, setEmailValue] = useState('')
     const [passValue, setPassValue] = useState('')
     const dispatch = useDispatch();

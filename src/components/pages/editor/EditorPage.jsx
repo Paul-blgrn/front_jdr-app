@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useContext, useCallback } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Responsive, WidthProvider } from 'react-grid-layout';
 import { useDrag, useDrop, DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
@@ -43,10 +43,10 @@ export default function EditorPage() {
     const [newItemName, setNewItemName] = useState(''); 
     
     const [textContent, setTextContent] = useState({});
-    const [itemBorderColor, setItemBorderColor] = useState('#000000');
-    const [itemTextColor, setItemTextColor] = useState('#000000');
-    const [itemFontSize, setItemFontSize] = useState('14px');
-    const [isDragging, setIsDragging] = useState(false);
+    // const [itemBorderColor, setItemBorderColor] = useState('#000000');
+    // const [itemTextColor, setItemTextColor] = useState('#000000');
+    // const [itemFontSize, setItemFontSize] = useState('14px');
+    // const [isDragging, setIsDragging] = useState(false);
     const gridRef = useRef(null);
 
     const onDrop = (acceptedFiles) => {

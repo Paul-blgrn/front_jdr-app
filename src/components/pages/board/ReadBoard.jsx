@@ -18,6 +18,9 @@ import UserContext from '../../../context/UserContext';
 import { Switch } from '@mui/material'; 
 import Menu from '../editor/Menu';
 
+import MainMenu from '../nav/MainMenu'
+import Logo from '../../reusable-ui/Logo';
+
 const ResponsiveGridLayout = WidthProvider(Responsive);
 const ItemType = 'ELEMENT';
 
@@ -222,6 +225,8 @@ export default function ReadBoard() {
 
     return (
         <DndProvider backend={HTML5Backend}>
+            <Logo />
+            <MainMenu />
             <div style={{ position: 'relative', minHeight: '100vh' }}>
                 <div 
                     style={{ 

@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import styled from "styled-components";
 import { theme } from '../../../theme';
@@ -17,12 +17,12 @@ export default function Login() {
         if (hasRun.current) return;
         
         if (!isLoggedIn || !user) {
-            console.log("[MainLogin]: Condition non remplie, arrêt du useEffect");
+            if (DEBUG) console.log("[MainLogin]: Condition non remplie, arrêt du useEffect");
             hasRun.current = true;
             return; // Le useEffect se termine ici, rien d'autre n'est exécuté
         } else {
-            console.log("[MainLogin]: isLoggedIn = ", isLoggedIn);
-            console.log("[MainLogin]: User = ", user);
+            if (DEBUG) console.log("[MainLogin]: isLoggedIn = ", isLoggedIn);
+            if (DEBUG) console.log("[MainLogin]: User = ", user);
             hasRun.current = true;
             return;
         }

@@ -43,7 +43,8 @@ export default function IconButton({ Icon, Label, Link, Dispatch }) {
                 if (DEBUG) console.log('[IconButton Dispatcher default]: <', finalLink, '> link button pressed !');
             }
         } catch (err) {
-            console.error('[IconButton Dispatcher]: ', err.message);
+            setError(err.message);
+            console.error('[IconButton Dispatcher]: ', error);
         }
 
     };
@@ -61,20 +62,21 @@ const IconActionButtonStyled = styled.button`
     border: none;
     border-radius: 5px;
     color: white;
-    font-size: 15px;
-    font-weight: 800;
     padding: 16px 24px;
     cursor: pointer;
     line-height: 1;
-
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     white-space: nowrap;
 
+    font-family: "Roboto", sans-serif;
+    font-weight:  ${theme.fonts.weights.light};
+    font-size: ${theme.fonts.size.P1};
+
     .icon {
-        font-size: 30px;
+        font-size: ${theme.fonts.size.P4};
     }
 
     &:hover:not(:disabled) {

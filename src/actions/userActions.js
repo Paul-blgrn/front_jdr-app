@@ -1,9 +1,7 @@
 import { persistor } from "../store/configureStore";
 import API from "../services/API";
-import Cookies from 'js-cookie';
+// import Cookies from 'js-cookie';
 import { DEBUG } from "../config/debug";
-
-import { setToken, deleteToken } from "./tokenActions";
 
 import {
   LOGIN_USER_REQUEST,
@@ -20,18 +18,19 @@ import {
   CLEAR_BOARDS,
   CLEAR_BOARD_DETAILS,
 } from './actionTypes';
+import axios from "axios";
 
-const getUserFromCookie = () => {
-  const userDataJson = Cookies.get('user_data');
-  return userDataJson ? JSON.parse(userDataJson) : null;
-};
+// const getUserFromCookie = () => {
+//   const userDataJson = Cookies.get('user_data');
+//   return userDataJson ? JSON.parse(userDataJson) : null;
+// };
 
 export const registerUser = (name, email, password, passwordConfirmation) => async (dispatch) => {
   dispatch({ type: REGISTER_USER_REQUEST });
   try {
     // GET XSRF TOKEN
     await API.getCsrfToken();
-    const response = await API.post('/register', {
+    const response = await API.post('/auth/register', {
       name,
       email,
       password,
@@ -40,7 +39,7 @@ export const registerUser = (name, email, password, passwordConfirmation) => asy
       withCredentials: true,
     });
     if (response.status === 200 || response.status === 204) {
-      const {authenticated, user, token} = response.data;
+      const { /*authenticated,*/ user, token} = response.data;
       if (DEBUG) console.log('[redux-action]: Registration response:', response);
       if (DEBUG) console.log('[redux-action]: Registration user:', user);
       dispatch({ 
@@ -71,12 +70,12 @@ export const loginUser = (email, password) => async (dispatch) => {
     dispatch({ type: LOGIN_USER_REQUEST });
     try {
         await API.getCsrfToken();
-        const response = await API.post('/login', {
+        const response = await API.post('/auth/login', {
             email,
             password,
         });
       if (response.status === 200 || response.status === 204) {
-        const {authenticated, user, token} = response.data;
+        const { /*authenticated,*/ user, token} = response.data;
         console.log('User Data from Cookie:', user);
   
         dispatch({
@@ -107,7 +106,7 @@ export const loginUser = (email, password) => async (dispatch) => {
 
 export const logoutUser = () => async (dispatch) => {
     try {
-        await API.post('/logout', {}, { withCredentials: true });
+        await API.post('/auth/logout', {}, { withCredentials: true });
         dispatch({ type: LOGOUT_USER });
         dispatch({ type: REQUEST_BEARER_TOKEN_CLEAN });
         dispatch({ type: CLEAR_BOARDS });
@@ -123,10 +122,24 @@ export const logoutUser = () => async (dispatch) => {
     }
 };
 
+const CancelToken = axios.CancelToken;
+let cancel;
+
 export const checkAuth = () => async (dispatch) => {
+  console.log("checkAuth called");
+  // Cancel previous request if exist
+  if (cancel) {
+    cancel();
+  }
+
   dispatch({ type: CHECKAUTH_USER_REQUEST });
   try {
-      const response = await API.get('auth/check');
+      const response = await API.get('auth/check', {
+        cancelToken: new CancelToken(function executor(c) {
+          // Save cancel function
+          cancel = c;
+        }),
+      });
       // console.log('[redux-action]: response = ', response.data);
       const { authenticated, user } = response.data;
       if (authenticated && user) {

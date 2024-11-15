@@ -1,11 +1,14 @@
 import axios from 'axios';
-// import { deleteAllCookies } from '../utils/cookieManager';
-// import { logoutUser } from '../actions/userActions';
+import { v4 as uuidv4 } from 'uuid';
 
 import { store } from '../store/configureStore';
 import { DEBUG } from '../config/debug';
 
 const pendingRequests = new Map();
+
+if (axios.defaults) {
+    axios.defaults.retry = 0;
+}
 
 const API = axios.create({
     baseURL: process.env.REACT_APP_API_URL,
@@ -22,64 +25,75 @@ const API = axios.create({
 // Generates a unique key for each request using URL, parameters, and data
 function generateRequestKey(config) {
     const { method, url, params, data } = config;
-    return [method, url, JSON.stringify(params), JSON.stringify(data)].join('|');
+    return `${method}|${url}|${uuidv4()}`;
 }
 
-// Request interceptor
-API.interceptors.request.use(
-    config => {
-        const requestKey = generateRequestKey(config);
-        console.log(`[REQUEST API] Checking request key: ${requestKey}`);
+if (API.interceptors && API.interceptors.request) {
+    // Request interceptor
+    API.interceptors.request.use(
+        config => {
+            const requestKey = generateRequestKey(config);
+            console.log(`[REQUEST API] Checking request key: ${requestKey}`);
 
-        // Check the current request
-        if (pendingRequests.has(requestKey)) {
-            // Request already in progress, cancel
-            if (DEBUG) console.log(`[REQUEST API] Duplicate request detected: ${requestKey}`);
-            return Promise.reject({ message: 'Duplicate request', config });
+            // Check the current request
+            if (pendingRequests.has(requestKey)) {
+                // Request already in progress, cancel
+                if (DEBUG) console.log(`[REQUEST API] Duplicate request detected: ${requestKey}`);
+                return Promise.reject({ message: 'Duplicate request', config });
+            }
+
+            // Added CSRF token for sensitive methods
+            const methodsToProtect = ['post', 'put', 'delete', 'patch'];
+            const token = getCookie('XSRF-TOKEN');
+
+            if (methodsToProtect.includes(config.method) && token) {
+                // Automatically add the XSRF token if available
+                config.headers['X-XSRF-TOKEN'] = token;
+            }
+
+            // Adding the authentication token
+            config.headers['Authorization'] = `Bearer ${store.getState().token.token}`;
+
+            // Adding the query to the list of current queries
+            pendingRequests.set(requestKey, config);
+            return config;
+        },
+        error => {
+            return Promise.reject(error);
         }
+    );
+}
 
-        // Added CSRF token for sensitive methods
-        const methodsToProtect = ['post', 'put', 'delete', 'patch'];
-        const token = getCookie('XSRF-TOKEN');
+if (API.interceptors && API.interceptors.response) {
+    const DELAY_BEFORE_REMOVAL = 500;
 
-        if (methodsToProtect.includes(config.method) && token) {
-            // Automatically add the XSRF token if available
-            config.headers['X-XSRF-TOKEN'] = token;
+    // Response Interceptor
+    API.interceptors.response.use(
+        (response) => {
+            const requestKey = generateRequestKey(response.config);
+            setTimeout(() => {
+                // Remove the query from the list once completed
+                pendingRequests.delete(requestKey);
+                console.log(`[RESPONSE API] Removed request key after delay: ${requestKey}`);
+            }, DELAY_BEFORE_REMOVAL);
+            return response;
+        },
+        (error) => {
+            const config = error.config || {}; 
+            const requestKey = generateRequestKey(config);
+            setTimeout(() => {
+                // Removing the query from the list on error
+                pendingRequests.delete(requestKey);
+                console.log(`[RESPONSE ERROR] Removed request key after delay: ${requestKey}`);
+            }, DELAY_BEFORE_REMOVAL);
+            return Promise.reject(error);
         }
-
-        // Adding the authentication token
-        config.headers['Authorization'] = `Bearer ${store.getState().token.token}`;
-
-        // Adding the query to the list of current queries
-        pendingRequests.set(requestKey, config);
-        return config;
-    },
-    error => {
-        return Promise.reject(error);
-    }
-);
-
-// Response Interceptor
-API.interceptors.response.use(
-    (response) => {
-        const requestKey = generateRequestKey(response.config);
-        console.log(`[RESPONSE API] Removing request key: ${requestKey}`);
-        // Remove the query from the list once completed
-        pendingRequests.delete(requestKey);
-        return response;
-    },
-    (error) => {
-        const requestKey = generateRequestKey(error.config || {});
-        console.log(`[RESPONSE ERROR] Removing request key: ${requestKey}`);
-        // Removing the query from the list on error
-        pendingRequests.delete(requestKey);
-        return Promise.reject(error);
-    }
-);
+    );
+}
 
 API.getCsrfToken = async () => {
     try {
-        const response = await API.get('/sanctum/csrf-cookie');
+        const response = await API.get('/auth/sanctum/csrf-cookie');
         console.log('[API]: CSRF token response:', response);
         const token = getCookie('XSRF-TOKEN');
         if (token) {

@@ -29,12 +29,12 @@ const LogoStyled = styled.div`
 h2 {
     text-align: center;
     color: ${theme.colors.primary};
-    font-size: ${theme.fonts.size.P4};
+    font-size: ${theme.fonts.size.P5};
     line-height: 1em;
     font-weight: ${theme.fonts.weights.bold};
     text-transform: uppercase;
     letter-spacing: 0.2px;
-    font-family: "OpenSans", sans-serif;
+    font-family: "Roboto", sans-serif;
     margin-top: -50px;
 }
 

@@ -7,6 +7,7 @@ import styled, { keyframes, css } from "styled-components";
 import { theme } from "../../../theme";
 
 import { IoAddCircleSharp } from "react-icons/io5";
+import { MdOutlineSubtitles } from "react-icons/md";
 
 import Logo from "../../reusable-ui/Logo";
 import CreateBoard from './CreateBoard';
@@ -14,10 +15,10 @@ import JoinBoard from './JoinBoard';
 import MainMenu from '../nav/MainMenu'
 import IconButton from '../../reusable-ui/IconButton'
 
-import { getBoards, getCreatedBoards, getJoinedBoards } from '../../../actions/boardActions';
+import { /*getBoards,*/ getCreatedBoards, getJoinedBoards } from '../../../actions/boardActions';
 import PaginateBoards from './PaginateBoards';
 
-import { DEBUG } from "../../../config/debug";
+// import { DEBUG } from "../../../config/debug";
 
 export default function ReadBoard() {
   const dispatch = useDispatch();
@@ -28,10 +29,10 @@ export default function ReadBoard() {
     created_boards_meta, 
     joined_boards, 
     joined_boards_meta, 
-    loading,
+    /*loading,*/
     loadingCreated,
     loadingJoined,
-    error 
+    /*error */
   }  = useSelector((state) => state.boards);
   const [isCreateFormOpen, setIsCreateFormOpen] = useState(false);
   const [isJoinFormOpen, setIsJoinFormOpen] = useState(false);
@@ -39,9 +40,9 @@ export default function ReadBoard() {
   const [currentJoinedPage, setCurrentJoinedPage] = useState(1);
 
   const { 
-    isCreatingBoard, 
+    /*isCreatingBoard, */
     setIsCreatingBoard, 
-    isJoiningBoard, 
+    /*isJoiningBoard, */
     setIsJoiningBoard 
   } = useContext(UserContext);
 
@@ -110,26 +111,26 @@ export default function ReadBoard() {
     <BoardsStyled>
       <Logo />
       <MainMenu />
-      <div className='boardButton'>
+      <BoardButtonStyled>
         <IconButton 
-          Icon={<IoAddCircleSharp />}
+          Icon={<IoAddCircleSharp className='boardMenuIconCreate' />}
           Label={'Créer un Board'}
           onClick={handleToggleCreateForm}
         />
         <IconButton 
-          Icon={<IoAddCircleSharp />}
+          Icon={<IoAddCircleSharp className='boardMenuIconJoin' />}
           Label={'Rejoindre un Board'}
           onClick={handleToggleJoinForm}
         />
-      </div>
+      </BoardButtonStyled>
       <div className='boardForms'>
         {isCreateFormOpen && (
-          <AnimatedDiv isvisible={isCreateFormOpen} className="board-form-overlay">
+          <AnimatedDiv isvisible={isCreateFormOpen.toString()} className="board-form-overlay">
             <CreateBoard onClose={handleCloseCreateForm} />
           </AnimatedDiv>
         )}
         {isJoinFormOpen && (
-          <AnimatedDiv isvisible={isJoinFormOpen} className="board-form-overlay">
+          <AnimatedDiv isvisible={isJoinFormOpen.toString()} className="board-form-overlay">
             <JoinBoard onClose={handleCloseJoinForm} />
           </AnimatedDiv>
         )}
@@ -154,9 +155,17 @@ export default function ReadBoard() {
             ) : created_boards.length > 0 ? (
               created_boards.map((board) => (
                 <div key={board.id} className='board-card' onClick={() => handleBoardClick(board.id)}>
-                  <h2 className='board-name'>{board.name}</h2>
-                  <p className='board-description'>{board.description}</p>
-                  <p className='board-capacity'>{board.users_count}/{board.capacity}</p>
+                  <div className='board-name'>
+                    <MdOutlineSubtitles className='boardIcon'/>
+                    <h2>{board.name}</h2>
+                  </div>
+                  <div className='board-description'>
+                    <MdOutlineSubtitles className='boardIcon'/>
+                    <p>{board.description}</p>
+                  </div>
+                  <div className='board-capacity'>
+                    <p>{board.users_count}/{board.capacity}</p>
+                  </div>
                 </div>
               ))
             ) : (
@@ -183,9 +192,17 @@ export default function ReadBoard() {
             ) : joined_boards.length > 0 ? (
               joined_boards.map((board) => (
                 <div key={board.id} className='board-card' onClick={() => handleBoardClick(board.id)}>
-                  <h2 className='board-name'>{board.name}</h2>
-                  <p className='board-description'>{board.description}</p>
-                  <p className='board-capacity'>{board.users_count}/{board.capacity}</p>
+                  <div className='board-name'>
+                    <MdOutlineSubtitles className='boardIcon'/>
+                    <h2>{board.name}</h2>
+                  </div>
+                  <div className='board-description'>
+                    <MdOutlineSubtitles className='boardIcon'/>
+                    <p>{board.description}</p>
+                  </div>
+                  <div className='board-capacity'>
+                    <p>{board.users_count}/{board.capacity}</p>
+                  </div>
                 </div>
               ))
             ) : (
@@ -197,6 +214,8 @@ export default function ReadBoard() {
     </BoardsStyled>
   )
 };
+
+
 
 const fadeIn = keyframes`
   from {
@@ -220,6 +239,27 @@ const fadeOut = keyframes`
   }
 `;
 
+const BoardButtonStyled = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  justify-items: center;
+  z-index: 10;
+  color: white;
+
+  &:hover:not(:disabled) {
+    color: red;
+  }
+
+  .boardMenuIconCreate {
+    color: #5ade50;
+  }
+
+  .boardMenuIconJoin {
+    color : #f2de74;
+  }
+`;
+
 const BoardsStyled = styled.div`
   margin: 0px auto;
   display: flex;
@@ -228,18 +268,9 @@ const BoardsStyled = styled.div`
   font-family: "Pacifico", sans-serif;
   position: relative;
   width: calc(100vw - 40px);
-    height: calc(100vh - 80px);
 
   .no-boards {
     color: white;
-  }
-
-  .boardButton {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    justify-items: center;
-    z-index: 10;
   }
 
   .boardForms {
@@ -274,7 +305,7 @@ const BoardsStyled = styled.div`
     overflow-y: auto;
     padding: 40px 20px 20px;
     box-sizing: border-box;
-    border: 1px solid green;
+    /* border: 1px solid green; */
   }
 
   .boards::-webkit-scrollbar {
@@ -292,7 +323,7 @@ const BoardsStyled = styled.div`
   }
 
   .boards-section {
-    border: 1px solid red;
+    /* border: 1px solid red; */
     margin-bottom: 20px;
     display: flex;
     flex-direction: column;
@@ -302,17 +333,17 @@ const BoardsStyled = styled.div`
   }
 
   .board-list {
+    /* border: 1px solid blue; */
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     gap: 10px;
     overflow-y: auto;
     box-sizing: border-box;
-    border: 1px solid blue;
   }
 
   .pagination-container {
-    border: 1px solid yellow;
+    /* border: 1px solid yellow; */
     display: flex;
     justify-content: center;
     position: sticky;
@@ -356,12 +387,13 @@ const BoardsStyled = styled.div`
     text-transform: uppercase;
     font-weight: bold;
     text-shadow: black 0 0 10px;
+    font-family: 'OpenSans' sans-serif;
   }
 
   .board-card {
-    width: calc(75% - 10px);
-    max-width: 250px;
-    height: 200px;
+    width: calc(100vw - 10px);
+    max-width: 275px;
+    height: 275px;
     margin: 0;
     background-color: #fff;
     border: 1px solid #ddd;
@@ -371,7 +403,6 @@ const BoardsStyled = styled.div`
     flex-direction: column;
     justify-content: space-between;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
-    font-size: 1rem;
     position: relative;
     box-sizing: border-box;
     text-align: center;
@@ -381,8 +412,22 @@ const BoardsStyled = styled.div`
     box-shadow: 0 0 10px rgba(0, 125, 255, 0.8);
   }
   
+  /* Board Title */
   .board-name {
-    border: 1px solid green;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+  }
+
+  .board-name::before {
+    content: 'Nom';
+    position: absolute;
+    margin-left: 20px;
+  }
+
+  .board-name h2 {
+    border: 1px solid ${theme.colors.greyMedium};
+    border-radius: 5px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -394,49 +439,68 @@ const BoardsStyled = styled.div`
     text-overflow: ellipsis;
     word-wrap: break-word;
     word-break: break-word;
-    margin-bottom: 10px;
+    max-width: 100vw;
+    height: 50px;
     padding: 10px;
+    margin-top: 5px;
   }
 
+  /* Board Description */
   .board-description {
-    border: 1px solid orangered;
     display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    font-size: calc(0.6rem + 0.4vw);
+    flex-direction: column;
+    margin-bottom: 50px;
+  }
+
+  .board-description::before {
+    content: 'Description';
+    position: absolute;
+    margin-left: 20px;
+  }
+
+  .board-description p {
+    border: 1px solid ${theme.colors.greyMedium};
+    border-radius: 5px;
     color: black;
-    white-space: normal;
-    overflow: hidden;
+    /* font-size: calc(0.6rem + 0.4vw); */
+    font-size: 1em;
     text-overflow: ellipsis;
+    text-align: center;
+    white-space: normal;
     word-wrap: break-word;
     word-break: break-word;
-    max-width: 100%; 
-    margin-bottom: 30px;
+    flex-grow: 1; 
+    max-width: 100vw;
+    height: 50px;
     padding: 10px;
-    flex-grow: 1;
+    margin-top: 5px;
   }
 
+  /* Board Capacity */
   .board-capacity {
-    border: 1px solid blue;
+    border: 1px dashed ${theme.colors.greyMedium};
     display: flex;
     justify-content: center;
     align-items: center;
     text-align: center;
     padding: 15px 10px;
     margin-top: 10px;
-    font-size: calc(0.7rem + 0.3vw);
+    /* font-size: calc(0.7rem + 0.3vw); */
     position: absolute;
     right: 3px;
     bottom: 3px;
-    width: 30px;
+    width: 35px;
     height: 25px;
     border-radius: 100%;
     background-color: white;
   }
 
-   /* Responsive adjustment */
-   @media (max-width: 1200px) {
+  .boardIcon {
+    font-size: 1em;
+  }
+
+  /* Responsive adjustment */
+  @media (max-width: 1200px) {
     .board-list {
       grid-template-columns: repeat(4, 1fr); /* 4 cartes par ligne */
     }
