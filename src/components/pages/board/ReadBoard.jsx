@@ -21,6 +21,8 @@ import Menu from '../editor/Menu';
 import MainMenu from '../nav/MainMenu'
 import Logo from '../../reusable-ui/Logo';
 
+import UpdateBoard from '../boards/UpdateBoard';
+
 const ResponsiveGridLayout = WidthProvider(Responsive);
 const ItemType = 'ELEMENT';
 
@@ -42,6 +44,7 @@ const DraggableItem = ({ item, children }) => {
 
 export default function ReadBoard() {
     const { isEditingTemplate, setIsEditingTemplate } = useContext(UserContext);
+    const { isEditingBoard, setIsEditingBoard } = useContext(UserContext);
     const { id } = useParams();
     const dispatch = useDispatch();
     const { board, loading, error } = useSelector((state) => state.board_details);
@@ -51,6 +54,10 @@ export default function ReadBoard() {
 
     const handleEditSwitchChange = (event) => {
         setIsEditingTemplate(event.target.checked); // Toggle the editing mode
+    };
+
+    const handleEditingBoard = (event) => {
+        setIsEditingBoard(event.target.checked);
     };
 
     const [layout, setLayout] = useState([]);
@@ -256,6 +263,21 @@ export default function ReadBoard() {
                             onChange={handleEditSwitchChange}
                             color="primary"
                         />
+                    </div>
+
+                    <div style={{ marginBottom: '20px' }}>
+                        <label>Modifier le Board</label>
+                        <Switch
+                            checked={isEditingBoard}
+                            onChange={handleEditingBoard}
+                            color="primary"
+                        />
+                    </div>
+
+                    <div>
+                        {isEditingBoard && (
+                            <UpdateBoard />
+                        )}
                     </div>
 
                     {isEditingTemplate && ( 

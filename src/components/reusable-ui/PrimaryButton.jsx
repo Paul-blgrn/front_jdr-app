@@ -1,9 +1,9 @@
 import styled from "styled-components";
 import { theme } from "../../theme";
 
-export default function PrimaryButton({ label, Icon, onClick=()=>{} }) {
+export default function PrimaryButton({ label, Icon, onClick=()=>{}, disabled = false }) {
   return (
-    <PrimaryButtonStyled className="buttonContainer" onClick={onClick}>
+    <PrimaryButtonStyled className="buttonContainer" onClick={onClick} disabled={disabled}>
         <span>{label}</span>
         <span className="icon">{Icon && Icon}</span>
     </PrimaryButtonStyled>
@@ -45,12 +45,10 @@ const PrimaryButtonStyled = styled.button`
         background: ${theme.colors.primary2};
         border: 1px solid ${theme.colors.primary2};
     }
-
     &:disabled {
         opacity: 0.6;
         cursor: not-allowed;
     }
-
     .icon {
         vertical-align: middle;
         justify-content: center;

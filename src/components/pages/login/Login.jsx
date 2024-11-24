@@ -10,7 +10,7 @@ import MainMenu from '../nav/MainMenu'
 import { DEBUG } from '../../../config/debug';
 
 export default function Login() {
-    const { user, isLoggedIn } = useSelector(state => state.user);
+    const { user, isLoggedIn } = useSelector(state => state.user || {});
     const hasRun = useRef(false);
 
     useEffect(() => {

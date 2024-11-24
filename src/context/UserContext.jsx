@@ -13,6 +13,9 @@ export default createContext({
     isJoiningBoard: false,
     setIsJoiningBoard: () => {},
 
+    isEditingBoard: false,
+    setIsEditingBoard: () => {},
+
     isEditingTemplate: false,
     setIsEditingTemplate: () => {},
 })

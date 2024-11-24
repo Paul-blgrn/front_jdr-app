@@ -12,7 +12,7 @@ import { loginUser } from '../../../../actions/userActions';
 import { DEBUG } from '../../../../config/debug';
 
 export default function LoginForm() {
-    const { error, loading } = useSelector(state => state.user);
+    const { error, loading } = useSelector(state => state.user || {});
     const [emailValue, setEmailValue] = useState('')
     const [passValue, setPassValue] = useState('')
     const dispatch = useDispatch();
