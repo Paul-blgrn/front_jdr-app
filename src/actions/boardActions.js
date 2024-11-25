@@ -78,33 +78,6 @@ export const joinBoard = (code) => async (dispatch) => {
     }
 };
 
-// export const getBoards = (createdPage = 1, joinedPage = 1) => async (dispatch) => {
-//     dispatch({ type: GET_BOARDS_REQUEST });
-//     try {
-//         // Récupérer les boards créés
-//         const response = await API.get(`/api/boards?created_page=${createdPage}&joined_page=${joinedPage}`);
-//         //console.log('response boards = ', response);
-//         //const response = await API.get(`/api/boards?page=${page}`);
-//         const { data, meta } = response.data;
-//         if (data && meta) {
-//             //console.log('[redux-action-boards] response | DATA = ', data, ' META = ', meta);
-//             dispatch({
-//                 type: GET_BOARDS_SUCCESS,
-//                 payload: { 
-//                     created_boards: data.created_boards,
-//                     created_boards_meta: meta.created_boards,
-//                     joined_boards: data.joined_boards,
-//                     joined_boards_meta: meta.joined_boards,
-//                 },
-//             })
-//         } else {
-//             dispatch({ type: GET_BOARDS_FAILURE });
-//         }
-//     } catch (error) {
-//         dispatch({ type: GET_BOARDS_FAILURE, payload: error.message || '[redux-action-boards]: An error occurred while get boards'});
-//     }
-// };
-
 export const getCreatedBoards = (createdPage) => async (dispatch) => {
     dispatch({ type: GET_CREATED_BOARDS_REQUEST });
     try {

@@ -18,6 +18,8 @@ import IconButton from '../../reusable-ui/IconButton'
 import { /*getBoards,*/ getCreatedBoards, getJoinedBoards } from '../../../actions/boardActions';
 import PaginateBoards from './PaginateBoards';
 
+import IconSwitcher from '../../reusable-ui/IconSwitcher';
+
 // import { DEBUG } from "../../../config/debug";
 
 export default function ReadBoard() {
@@ -91,6 +93,14 @@ export default function ReadBoard() {
     navigate(`/board/${boardId}`);
   };
 
+  const handleDeleteBoard = (boardID) => {
+    alert("vous avez tenté de supprimer le board ID " + boardID);
+  };
+
+  const handleLeaveBoard = (boardID) => {
+    alert("vous avez tenté de quitter le board ID " + boardID);
+  };
+
   const handlePageChange = (type, direction) => {
     if (type === 'created') {
       if (direction === 'next' && currentCreatedPage < created_boards_meta.last_page) {
@@ -111,6 +121,7 @@ export default function ReadBoard() {
     <BoardsStyled>
       <Logo />
       <MainMenu />
+      {/* Create and Join Board Buttons */}
       <BoardButtonStyled>
         <IconButton 
           Icon={<IoAddCircleSharp className='boardMenuIconCreate' />}
@@ -123,6 +134,7 @@ export default function ReadBoard() {
           onClick={handleToggleJoinForm}
         />
       </BoardButtonStyled>
+      {/* Board creation and Join forms */}
       <div className='boardForms'>
         {isCreateFormOpen && (
           <AnimatedDiv isvisible={isCreateFormOpen.toString()} className="board-form-overlay">
@@ -137,9 +149,10 @@ export default function ReadBoard() {
       </div>
 
       <div className='boards'>
-        {/* Affichage des boards créés*/} 
+        {/* Display Created boards */} 
         <div className='boards-section'>
           <h1 className='board-title'>Mes boards créés</h1>
+          {/* Board Pagination */}
           <div className='pagination-container'>
             {created_boards_meta.last_page >= 2 && (
               <PaginateBoards 
@@ -149,12 +162,35 @@ export default function ReadBoard() {
               />
             )}
           </div>
+          {/* Created Boards Card */}
           <div className='board-list'>
             {loadingCreated ? (
               <h2 className='loading-board'>Chargement...</h2>
             ) : created_boards.length > 0 ? (
               created_boards.map((board) => (
-                <div key={board.id} className='board-card' onClick={() => handleBoardClick(board.id)}>
+                <div 
+                  key={board.id} 
+                  className='board-card' 
+                  onClick={(event) => { 
+                    event.stopPropagation(); 
+                    handleBoardClick(board.id);
+                  }}
+                  >
+                  <div className='board-delete'>
+                    <IconSwitcher 
+                      defaultLibrary="ri"
+                      defaultIcon={"RiDeleteBin2Fill"}
+                      hoverLibrary="ri"
+                      hoverIcon={"RiDeleteBin2Line"}
+                      size={38}
+                      defaultColor="darkred"
+                      hoverColor="red"
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        handleDeleteBoard(board.id);
+                      }}
+                    />
+                  </div>
                   <div className='board-name'>
                     <MdOutlineSubtitles className='boardIcon'/>
                     <h2>{board.name}</h2>
@@ -174,9 +210,10 @@ export default function ReadBoard() {
           </div>
         </div>
 
-        {/* Affichage des boards rejoints */}
+        {/* Display Joined boards */}
         <div className='boards-section'>
           <h1 className='board-title'>Boards Rejoints</h1>
+          {/* Board Pagination */}
           <div className='pagination-container'>
             {joined_boards_meta.last_page >= 2 && (
               <PaginateBoards
@@ -186,12 +223,35 @@ export default function ReadBoard() {
               />
             )}
           </div>
+
+          {/* Joined Boards Card */}
           <div className='board-list'>
             {loadingJoined ? (
               <h2 className='loading-board'>Chargement...</h2>
             ) : joined_boards.length > 0 ? (
               joined_boards.map((board) => (
-                <div key={board.id} className='board-card' onClick={() => handleBoardClick(board.id)}>
+                <div 
+                  key={board.id} 
+                  className='board-card' 
+                  onClick={(event) => { 
+                    event.stopPropagation(); 
+                    handleBoardClick(board.id);
+                  }}
+                >
+                  <div className='board-leave'>
+                    <IconSwitcher
+                      library="fa"
+                      defaultIcon="FaDoorClosed"
+                      hoverIcon="FaDoorOpen"
+                      size={38}
+                      defaultColor="darkred"
+                      hoverColor="red"
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        handleLeaveBoard(board.id);
+                      }}
+                    />
+                  </div>
                   <div className='board-name'>
                     <MdOutlineSubtitles className='boardIcon'/>
                     <h2>{board.name}</h2>
@@ -411,12 +471,29 @@ const BoardsStyled = styled.div`
   .board-card:hover {
     box-shadow: 0 0 10px rgba(0, 125, 255, 0.8);
   }
+
+  .board-delete {
+    display: flex;
+    position: absolute;
+    right: 0;
+    top: 0;
+    color: red;
+    font-size: xx-large;
+  }
+
+  .board-leave {
+    /* margin: 0;
+    padding: 0;
+    position: absolute;
+    right: 0; */
+  }
   
   /* Board Title */
   .board-name {
     display: flex;
     flex-direction: column;
     margin-bottom: 10px;
+    margin-top: 1px;
   }
 
   .board-name::before {
