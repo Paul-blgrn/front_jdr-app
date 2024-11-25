@@ -29,7 +29,8 @@ table {
 	border-spacing: 0;
 }
 html {
-  background: url("../public/images/background_6.jfif") no-repeat center fixed rgba(0, 0, 0, 0.7);
+  /* background: url("../public/images/background_6.jfif") no-repeat center fixed rgba(0, 0, 0, 0.7); */
+  background-color: #a7a8ad;
   background-size: cover;
   height: 100vh;
   width: 100vw;
