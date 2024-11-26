@@ -1,7 +1,7 @@
 module.exports = {
-    Stage: ({ children }) => <div>{children}</div>,
-    Layer: ({ children }) => <div>{children}</div>,
-    Rect: () => <div />,
-    Circle: () => <div />,
-    Ellipse: () => <div />,
-  };
+  Stage: jest.fn((props) => <div {...props} />),
+  Layer: jest.fn((props) => <div {...props} />),
+  Rect: jest.fn((props) => <div {...props} />),
+  Circle: jest.fn((props) => <div {...props} />),
+  Ellipse: jest.fn((props) => <div {...props} />),
+};

@@ -1,179 +1,121 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { Provider } from 'react-redux';
-import { BrowserRouter } from 'react-router-dom';
-import configureStore from 'redux-mock-store';
-import ReadBoard from '../../../../components/pages/boards/ReadBoard'
-import * as boardActions from '../../../../actions/boardActions';
+import configureMockStore from 'redux-mock-store';
+import { thunk as Thunk} from 'redux-thunk';
+import { MemoryRouter, useNavigate } from 'react-router-dom';
+import ReadBoard from '../../../../components/pages/boards/ReadBoard';
 
-// Mock des hooks
-jest.mock('react-redux', () => ({
-  useDispatch: jest.fn(),
-  useSelector: jest.fn(),
-}));
-jest.mock('react-router-dom', () => ({
-  useNavigate: jest.fn(),
+// Mock des actions Redux
+jest.mock('../../../../actions/boardActions', () => ({
+  getCreatedBoards: jest.fn(() => ({ type: 'GET_CREATED_BOARDS_REQUEST' })),
+  getJoinedBoards: jest.fn(() => ({ type: 'GET_JOINED_BOARDS_REQUEST' })),
 }));
 
-// Création du store mock
-const mockStore = configureStore([]);
-const initialState = {
-  user: { user: { id: 1 }, isLoggedIn: true },
-  boards: {
-    created_boards: [{ id: 1, name: 'Board 1', description: 'Description 1', users_count: 3, capacity: 5 }],
-    created_boards_meta: { last_page: 2 },
-    joined_boards: [],
-    joined_boards_meta: { last_page: 1 },
-    loading: false,
-    loadingCreated: false,
-    loadingJoined: false,
-    error: null,
-  },
-};
-
-// Mock pour navigate et dispatch
-const mockNavigate = jest.fn();
-const mockDispatch = jest.fn();
-jest.mock('react-router-dom', () => ({
-  useNavigate: () => mockNavigate,
-}));
-jest.mock('react-redux', () => ({
-  useDispatch: () => mockDispatch,
-}));
-
-describe('ReadBoard', () => {
-    it('should render without crashing', () => {
-      render(<ReadBoard />);
-      expect(screen.getByText(/Board/)).toBeInTheDocument();
-    });
+// Mock de useNavigate
+jest.mock('react-router-dom', () => {
+  const actual = jest.requireActual('react-router-dom');
+  return {
+    ...actual,
+    useNavigate: jest.fn(() => jest.fn()),
+  };
 });
 
-// describe('<ReadBoard />', () => {
-//   let store;
+const mockStore = configureMockStore([Thunk]);
 
-//   beforeEach(() => {
-//     store = mockStore(initialState);
-//     mockDispatch.mockClear();
-//     mockNavigate.mockClear();
-//   });
+describe('ReadBoard Component', () => {
+  let store;
 
-//   test('renders board titles correctly', () => {
-//     render(
-//       <Provider store={store}>
-//         <BrowserRouter>
-//           <ReadBoard />
-//         </BrowserRouter>
-//       </Provider>
-//     );
+  beforeEach(() => {
+    store = mockStore({
+      user: {
+        user: { id: 1, name: 'Test User', email: 'test@test.f' }, // Simule un utilisateur connecté
+        isLoggedIn: true,
+      },
+      boards: {
+        created_boards: [
+          { id: 1, name: 'Board 1', description: 'Description 1', users_count: 5, capacity: 10 },
+          { id: 2, name: 'Board 2', description: 'Description 2', users_count: 2, capacity: 8 },
+        ],
+        joined_boards: [
+          { id: 3, name: 'Board 3', description: 'Description 3', users_count: 8, capacity: 10 },
+        ],
+        created_boards_meta: { last_page: 1 },
+        joined_boards_meta: { last_page: 1 },
+        loadingCreated: false,
+        loadingJoined: false,
+      },
+    });
+  });
 
-//     expect(screen.getByText(/Mes boards créés/i)).toBeInTheDocument();
-//     expect(screen.getByText(/Boards Rejoints/i)).toBeInTheDocument();
-//   });
+  it('renders correctly for a logged-in user', async () => {
+    render(
+      <Provider store={store}>
+        <MemoryRouter initialEntries={['/boards']}>
+          <ReadBoard />
+        </MemoryRouter>
+      </Provider>
+    );
 
-//   test('renders "Create Board" and "Join Board" buttons', () => {
-//     render(
-//       <Provider store={store}>
-//         <BrowserRouter>
-//           <ReadBoard />
-//         </BrowserRouter>
-//       </Provider>
-//     );
+    // Vérifiez que les titres sont présents
+    expect(screen.getByText(/Mes boards créés/i)).toBeInTheDocument();
+    expect(screen.getByText(/Boards Rejoints/i)).toBeInTheDocument();
 
-//     expect(screen.getByText(/Créer un Board/i)).toBeInTheDocument();
-//     expect(screen.getByText(/Rejoindre un Board/i)).toBeInTheDocument();
-//   });
+    // Vérifiez qu'un board créé est affiché
+    expect(screen.getByText(/Board 1/i)).toBeInTheDocument();
+    expect(screen.getByText(/Description 1/i)).toBeInTheDocument();
 
-//   test('dispatches action to get created boards on load', () => {
-//     render(
-//       <Provider store={store}>
-//         <BrowserRouter>
-//           <ReadBoard />
-//         </BrowserRouter>
-//       </Provider>
-//     );
+    // Vérifiez qu'un board rejoint est affiché
+    expect(screen.getByText(/Board 3/i)).toBeInTheDocument();
+    expect(screen.getByText(/Description 3/i)).toBeInTheDocument();
+  });
 
-//     expect(mockDispatch).toHaveBeenCalledWith(boardActions.getCreatedBoards(1));
-//   });
+  it('navigates to a board when clicked', async () => {
+    const mockNavigate = jest.fn();
+    useNavigate.mockReturnValue(mockNavigate);
 
-//   test('navigates to home if user is not logged in', () => {
-//     const loggedOutState = {
-//       ...initialState,
-//       user: { user: null, isLoggedIn: false },
-//     };
-//     store = mockStore(loggedOutState);
+    render(
+      <Provider store={store}>
+        <MemoryRouter initialEntries={['/boards']}>
+          <ReadBoard />
+        </MemoryRouter>
+      </Provider>
+    );
 
-//     render(
-//       <Provider store={store}>
-//         <BrowserRouter>
-//           <ReadBoard />
-//         </BrowserRouter>
-//       </Provider>
-//     );
+    // Simulez un clic sur un board
+    const board = screen.getByText(/Board 1/i);
+    fireEvent.click(board);
 
-//     expect(mockNavigate).toHaveBeenCalledWith('/');
-//   });
+    // Vérifiez que la navigation est appelée
+    await waitFor(() => {
+      expect(mockNavigate).toHaveBeenCalledWith('/board/1');
+    });
+  });
 
-//   test('displays loading message when loadingCreated is true', () => {
-//     const loadingState = {
-//       ...initialState,
-//       boards: { ...initialState.boards, loadingCreated: true },
-//     };
-//     store = mockStore(loadingState);
+  it('opens and closes the Create Board form', () => {
+    render(
+      <Provider store={store}>
+        <MemoryRouter initialEntries={['/boards']}>
+          <ReadBoard />
+        </MemoryRouter>
+      </Provider>
+    );
 
-//     render(
-//       <Provider store={store}>
-//         <BrowserRouter>
-//           <ReadBoard />
-//         </BrowserRouter>
-//       </Provider>
-//     );
+    // Simuler l'ouverture du formulaire
+    const createButton = screen.getByText(/Créer un Board/i);
+    fireEvent.click(createButton);
 
-//     expect(screen.getByText(/Chargement.../i)).toBeInTheDocument();
-//   });
+    expect(screen.getByPlaceholderText(/Entrez un nom/i)).toBeInTheDocument();
+    expect(screen.getByPlaceholderText(/Entrez une courte description/i)).toBeInTheDocument();
+    expect(screen.getByText(/Confirmer/i)).toBeInTheDocument();
 
-//   test('calls handleToggleCreateForm on Create Board button click', () => {
-//     render(
-//       <Provider store={store}>
-//         <BrowserRouter>
-//           <ReadBoard />
-//         </BrowserRouter>
-//       </Provider>
-//     );
+    // Simulez la fermeture du formulaire
+    const closeButton = screen.getByText(/Créer un board/i);
+    fireEvent.click(closeButton);
 
-//     const createBoardButton = screen.getByText(/Créer un Board/i);
-//     fireEvent.click(createBoardButton);
-
-//     // Vérifie si le formulaire de création est visible
-//     expect(screen.getByText(/Créer un nouveau board/i)).toBeInTheDocument();
-//   });
-
-//   test('calls handleBoardClick on board card click', () => {
-//     render(
-//       <Provider store={store}>
-//         <BrowserRouter>
-//           <ReadBoard />
-//         </BrowserRouter>
-//       </Provider>
-//     );
-
-//     const boardCard = screen.getByText('Board 1');
-//     fireEvent.click(boardCard);
-
-//     expect(mockNavigate).toHaveBeenCalledWith('/board/1');
-//   });
-
-//   test('updates currentCreatedPage on pagination button click', () => {
-//     render(
-//       <Provider store={store}>
-//         <BrowserRouter>
-//           <ReadBoard />
-//         </BrowserRouter>
-//       </Provider>
-//     );
-
-//     const nextPageButton = screen.getByRole('button', { name: /next/i });
-//     fireEvent.click(nextPageButton);
-
-//     expect(mockDispatch).toHaveBeenCalledWith(boardActions.getCreatedBoards(2));
-//   });
-// });
+    // Vérifiez que le formulaire est caché
+    expect(screen.queryByText(/Créer un board/i)).toBeInTheDocument();
+    expect(screen.queryByPlaceholderText(/Entrez un nom/i)).not.toBeInTheDocument();
+    expect(screen.queryByPlaceholderText(/Entrez une description/i)).not.toBeInTheDocument();
+  });
+});

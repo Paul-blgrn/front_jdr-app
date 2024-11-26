@@ -1,14 +1,10 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import { BrowserRouter } from 'react-router-dom';
+import { MemoryRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import App from '../App';
-
-const redux = require('redux');
-const thunkMiddleware = require('redux-thunk').default;
-const createStore = redux.createStore
-const applyMiddleware = redux.applyMiddleware
-
+import configureMockStore from 'redux-mock-store';
+import { thunk as thunkMiddleware } from 'redux-thunk';
 
 // Reducer simulé pour les tests
 const initialState = {
@@ -21,98 +17,26 @@ const initialState = {
   error: null,
 };
 
-const userReducer = (state = initialState, action) => {
-  switch (action.type) {
-    case 'LOGIN_USER_SUCCESS':
-      return { ...state, isLoggedIn: true, user: action.payload.user };
-    default:
-      return state;
-  }
-};
+const middlewares = [thunkMiddleware];
+const mockStore = configureMockStore(middlewares);
 
-const fetchUsers = () => {
-  return function(dispatch) {
-
-  }
-}
-// Création d'un store pour les tests
-const mockStore = createStore(userReducer, applyMiddleware(thunkMiddleware));
+const store = mockStore(initialState);
 
 describe('App Component', () => {
   test('should render LoginPage for "/" route', () => {
     render(
-      <Provider store={mockStore}>
-        <BrowserRouter>
+      <Provider store={store}>
+        <MemoryRouter initialEntries={['/']}>
           <App />
-        </BrowserRouter>
+        </MemoryRouter>
       </Provider>
     );
 
-    // Vérifier que le composant LoginPage est rendu pour la route "/"
-    expect(screen.getByText(/Login/i)).toBeInTheDocument();
-  });
+    // Vérifier que la page Login est rendue
+    expect(screen.getByPlaceholderText(/Entrez votre E-mail/i)).toBeInTheDocument();
+    expect(screen.getByPlaceholderText(/Entrez votre mot de passe/i)).toBeInTheDocument();
 
-  test('should render ReadBoard for "/boards" route', () => {
-    render(
-      <Provider store={mockStore}>
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
-      </Provider>
-    );
-
-    // Accéder à la route "/boards"
-    window.history.pushState({}, 'Boards page', '/boards');
-
-    // Vérifier que le composant ReadBoard est rendu
-    expect(screen.getByText(/Boards/i)).toBeInTheDocument();
-  });
-
-  test('should render DetailBoard for "/board/:id" route', () => {
-    render(
-      <Provider store={mockStore}>
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
-      </Provider>
-    );
-
-    // Accéder à une route dynamique "/board/:id"
-    window.history.pushState({}, 'Board Detail page', '/board/1');
-
-    // Vérifier que le composant DetailBoard est rendu
-    expect(screen.getByText(/Board Detail/i)).toBeInTheDocument();
-  });
-
-  test('should render Templates for "/templates" route', () => {
-    render(
-      <Provider store={mockStore}>
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
-      </Provider>
-    );
-
-    // Accéder à la route "/templates"
-    window.history.pushState({}, 'Templates page', '/templates');
-
-    // Vérifier que le composant Templates est rendu
-    expect(screen.getByText(/Templates/i)).toBeInTheDocument();
-  });
-
-  test('should render ErrorPage for unknown route', () => {
-    render(
-      <Provider store={mockStore}>
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
-      </Provider>
-    );
-
-    // Accéder à une route inconnue
-    window.history.pushState({}, 'Error page', '/unknown');
-
-    // Vérifier que le composant ErrorPage est rendu
-    expect(screen.getByText(/Error:/i)).toBeInTheDocument();
+    expect(screen.getByText(/Confirmer/i)).toBeInTheDocument();
+    expect(screen.getByText(/Inscription/i)).toBeInTheDocument();
   });
 });

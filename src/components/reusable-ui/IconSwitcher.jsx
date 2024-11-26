@@ -52,7 +52,10 @@ export default function IconSwitcher({
     )
 }
 
-const IconSwitcherStyled = styled.div`
+const IconSwitcherStyled = styled.div.withConfig({
+    shouldForwardProp: (prop) => 
+        !['isHovered', 'hoverColor', 'defaultColor'].includes(prop)
+})`
     display: flex;
     justify-content: right;
     padding: 0;

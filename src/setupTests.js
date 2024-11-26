@@ -3,9 +3,13 @@
 // expect(element).toHaveTextContent(/react/i)
 // learn more: https://github.com/testing-library/jest-dom
 import '@testing-library/jest-dom';
-import { persistStore } from 'redux-persist';
-import { createStore, applyMiddleware } from 'redux';
-import { configureStore } from '@reduxjs/toolkit';
+global.TextEncoder = require('util').TextEncoder;
+global.TextDecoder = require('util').TextDecoder;
+
+// import { persistStore } from 'redux-persist';
+// import { createStore, applyMiddleware } from 'redux';
+// import { configureStore } from '@reduxjs/toolkit';
+
 
 // export const LOGIN_USER_REQUEST = 'LOGIN_USER_REQUEST';
 // export const CHECKAUTH_USER_REQUEST = 'CHECKAUTH_USER_REQUEST';

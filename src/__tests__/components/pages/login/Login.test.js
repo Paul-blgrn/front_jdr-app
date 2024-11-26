@@ -1,12 +1,12 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
-import Login from '../../../../App'
+import App from '../../../../App'
 
 test('should display the logged out menu when user is not logged in and login menu when logged in', async () => {
   render(
     <BrowserRouter>
-        <App />
+      <App />
     </BrowserRouter>
   )
 
