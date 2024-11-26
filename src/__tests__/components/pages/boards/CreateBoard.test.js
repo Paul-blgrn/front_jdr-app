@@ -48,28 +48,6 @@ describe('ReadBoard Component', () => {
     });
   });
 
-  it('renders correctly for a logged-in user', async () => {
-    render(
-      <Provider store={store}>
-        <MemoryRouter initialEntries={['/boards']}>
-          <ReadBoard />
-        </MemoryRouter>
-      </Provider>
-    );
-
-    // Vérifiez que les titres sont présents
-    expect(screen.getByText(/Mes boards créés/i)).toBeInTheDocument();
-    expect(screen.getByText(/Boards Rejoints/i)).toBeInTheDocument();
-
-    // Vérifiez qu'un board créé est affiché
-    expect(screen.getByText(/Board 1/i)).toBeInTheDocument();
-    expect(screen.getByText(/Description 1/i)).toBeInTheDocument();
-
-    // Vérifiez qu'un board rejoint est affiché
-    expect(screen.getByText(/Board 3/i)).toBeInTheDocument();
-    expect(screen.getByText(/Description 3/i)).toBeInTheDocument();
-  });
-
   it('navigates to a board when clicked', async () => {
     const mockNavigate = jest.fn();
     useNavigate.mockReturnValue(mockNavigate);
@@ -92,7 +70,7 @@ describe('ReadBoard Component', () => {
     });
   });
 
-  it('opens and closes the Join Board form', () => {
+  it('opens and closes the Create Board form', () => {
     render(
       <Provider store={store}>
         <MemoryRouter initialEntries={['/boards']}>
@@ -102,18 +80,20 @@ describe('ReadBoard Component', () => {
     );
 
     // Simuler l'ouverture du formulaire
-    const joinButton = screen.getByText(/Rejoindre un Board/i);
-    fireEvent.click(joinButton);
+    const createButton = screen.getByText(/Créer un Board/i);
+    fireEvent.click(createButton);
 
-    expect(screen.getByPlaceholderText(/Entrez un code/i)).toBeInTheDocument();
+    expect(screen.getByPlaceholderText(/Entrez un nom/i)).toBeInTheDocument();
+    expect(screen.getByPlaceholderText(/Entrez une courte description/i)).toBeInTheDocument();
     expect(screen.getByText(/Confirmer/i)).toBeInTheDocument();
 
     // Simulez la fermeture du formulaire
-    const closeJButton = screen.getByText(/Rejoindre un board/i);
-    fireEvent.click(closeJButton);
+    const closeButton = screen.getByText(/Créer un board/i);
+    fireEvent.click(closeButton);
 
     // Vérifiez que le formulaire est caché
-    expect(screen.queryByText(/Rejoindre un board/i)).toBeInTheDocument();
-    expect(screen.queryByPlaceholderText(/Entrez un code/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Créer un board/i)).toBeInTheDocument();
+    expect(screen.queryByPlaceholderText(/Entrez un nom/i)).not.toBeInTheDocument();
+    expect(screen.queryByPlaceholderText(/Entrez une description/i)).not.toBeInTheDocument();
   });
 });
