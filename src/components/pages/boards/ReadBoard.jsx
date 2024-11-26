@@ -182,7 +182,7 @@ export default function ReadBoard() {
                       defaultIcon={"RiDeleteBin2Fill"}
                       hoverLibrary="ri"
                       hoverIcon={"RiDeleteBin2Line"}
-                      size={38}
+                      size={35}
                       defaultColor="darkred"
                       hoverColor="red"
                       onClick={(event) => {
@@ -194,6 +194,7 @@ export default function ReadBoard() {
                   <div className='board-name'>
                     <MdOutlineSubtitles className='boardIcon'/>
                     <h2>{board.name}</h2>
+                    
                   </div>
                   <div className='board-description'>
                     <MdOutlineSubtitles className='boardIcon'/>
@@ -243,7 +244,7 @@ export default function ReadBoard() {
                       library="fa"
                       defaultIcon="FaDoorClosed"
                       hoverIcon="FaDoorOpen"
-                      size={38}
+                      size={35}
                       defaultColor="darkred"
                       hoverColor="red"
                       onClick={(event) => {
@@ -477,15 +478,13 @@ const BoardsStyled = styled.div`
     position: absolute;
     right: 0;
     top: 0;
-    color: red;
-    font-size: xx-large;
   }
 
   .board-leave {
-    /* margin: 0;
-    padding: 0;
+    display: flex;
     position: absolute;
-    right: 0; */
+    right: 0;
+    top: 0;
   }
   
   /* Board Title */

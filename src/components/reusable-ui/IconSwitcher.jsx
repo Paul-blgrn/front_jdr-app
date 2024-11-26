@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import * as FaIcons  from "react-icons/fa";
 import * as TiIcons from "react-icons/ti";
 import * as RiIcons from "react-icons/ri";
+import * as MdIcons from "react-icons/md";
 
 import styled from "styled-components";
 
@@ -25,6 +26,7 @@ export default function IconSwitcher({
         fa: FaIcons,
         ti: TiIcons,
         ri: RiIcons,
+        md: MdIcons,
     }
 
     const DefaultIcons = iconLibraries[defaultLibrary] || {};
@@ -56,13 +58,8 @@ const IconSwitcherStyled = styled.div.withConfig({
     shouldForwardProp: (prop) => 
         !['isHovered', 'hoverColor', 'defaultColor'].includes(prop)
 })`
-    display: flex;
-    justify-content: right;
     padding: 0;
     margin: 0;
-    position: absolute;
-    right: 0;
-    top: 0;
     color: ${({ isHovered, hoverColor, defaultColor }) =>
     isHovered ? hoverColor : defaultColor};
     font-size: ${({ size }) => size}px;
