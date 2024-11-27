@@ -255,24 +255,29 @@ export default function ReadBoard() {
                     <p>{board.description}</p>
                     <p>{board.users_count}/{board.capacity} utilisateurs</p>
                     <p>Code: {board.code}</p>
+                    
+                    {/*console.log('board details: ' + board)*/}
+                    {board.pivot.role_id === 4 && (
+                        <div style={{ marginBottom: '20px' }}>
+                            <label>Mode édition</label>
+                            <Switch
+                                checked={isEditingTemplate}
+                                onChange={handleEditSwitchChange}
+                                color="primary"
+                            />
+                        </div>
+                    )}
 
-                    <div style={{ marginBottom: '20px' }}>
-                        <label>Mode édition</label>
-                        <Switch
-                            checked={isEditingTemplate}
-                            onChange={handleEditSwitchChange}
-                            color="primary"
-                        />
-                    </div>
-
-                    <div style={{ marginBottom: '20px' }}>
-                        <label>Modifier le Board</label>
-                        <Switch
-                            checked={isEditingBoard}
-                            onChange={handleEditingBoard}
-                            color="primary"
-                        />
-                    </div>
+                    {board.pivot.role_id === 4 && (
+                        <div style={{ marginBottom: '20px' }}>
+                            <label>Modifier le Board</label>
+                            <Switch
+                                checked={isEditingBoard}
+                                onChange={handleEditingBoard}
+                                color="primary"
+                            />
+                        </div>
+                    )}
 
                     <div>
                         {isEditingBoard && (
