@@ -19,6 +19,12 @@ import {
     GET_JOINED_BOARDS_FAILURE,
 
     CLEAR_BOARDS,
+    LEAVE_BOARD_REQUEST,
+    LEAVE_BOARD_SUCCESS,
+    LEAVE_BOARD_FAILURE,
+    DELETE_BOARD_REQUEST,
+    DELETE_BOARD_SUCCESS,
+    DELETE_BOARD_FAILURE,
 } from "./actionTypes";
 
 export const createBoard = (name, description, capacity) => async (dispatch) => {
@@ -51,6 +57,23 @@ export const createBoard = (name, description, capacity) => async (dispatch) => 
     }
 };
 
+export const deleteBoard = (boardID) => async (dispatch) => {
+    dispatch({ type: DELETE_BOARD_REQUEST });
+    try {
+        const response = await API.delete(`/api/board/${boardID}/delete`);
+        if (DEBUG) console.log('response = ', response)
+        if (response.status === 200) {
+            dispatch({
+                type: DELETE_BOARD_SUCCESS,
+            })
+            dispatch(getCreatedBoards(1));
+        }
+    } catch (error) {
+        if (DEBUG) console.error('[redux-action-boards]: Error during Deleting board: ', error.response?.data || error.message);
+        dispatch({ type: DELETE_BOARD_FAILURE, payload: error.response?.data || error.message });
+    }
+};
+
 export const joinBoard = (code) => async (dispatch) => {
     dispatch({ type: JOIN_BOARD_REQUEST });
     try {
@@ -75,6 +98,23 @@ export const joinBoard = (code) => async (dispatch) => {
     } catch (error) {
         if (DEBUG) console.error('[redux-action-boards]: Error during Joining board: ', error.response?.data || error.message);
         dispatch({ type: JOIN_BOARD_FAILURE, payload: error.response?.data || error.message });
+    }
+};
+
+export const leaveBoard = (boardID) => async (dispatch) => {
+    dispatch({ type: LEAVE_BOARD_REQUEST });
+    try {
+        const response = await API.delete(`/api/board/${boardID}/leave`);
+        if (DEBUG) console.log('response = ', response)
+        if (response.status === 200) {
+            dispatch({
+                type: LEAVE_BOARD_SUCCESS,
+            })
+            dispatch(getJoinedBoards(1));
+        }
+    } catch (error) {
+        if (DEBUG) console.error('[redux-action-boards]: Error during Leaving board: ', error.response?.data || error.message);
+        dispatch({ type: LEAVE_BOARD_FAILURE, payload: error.response?.data || error.message });
     }
 };
 

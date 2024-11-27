@@ -12,6 +12,12 @@ import {
     GET_JOINED_BOARDS_SUCCESS,
     GET_JOINED_BOARDS_FAILURE,
     CLEAR_BOARDS,
+    LEAVE_BOARD_REQUEST,
+    LEAVE_BOARD_SUCCESS,
+    LEAVE_BOARD_FAILURE,
+    DELETE_BOARD_REQUEST,
+    DELETE_BOARD_SUCCESS,
+    DELETE_BOARD_FAILURE
 } from '../actions/actionTypes'
 
 const initialState = {
@@ -23,6 +29,7 @@ const initialState = {
     loadingCreated: false,
     loadingJoined: false,
     error: null,
+    leaveStatus: null,
 }
 
 const boardReducer = (state = initialState, action) => {
@@ -79,6 +86,18 @@ const boardReducer = (state = initialState, action) => {
                 joined_boards: [], 
                 joined_boards_meta: {} 
             };
+        case LEAVE_BOARD_REQUEST:
+            return { ...state, leaveStatus: 'loading', loading: true, error: null };
+        case LEAVE_BOARD_SUCCESS:
+            return { ...state, leaveStatus: 'success', loading: false, error: null };
+        case LEAVE_BOARD_FAILURE:
+            return { ...state, leaveStatus: 'failure', loading: false, error: action.payload };
+        case DELETE_BOARD_REQUEST:
+            return { ...state, loading: true, error: null };
+        case DELETE_BOARD_SUCCESS:
+            return { ...state, loading: false, error: null };
+        case DELETE_BOARD_FAILURE:
+            return { ...state, loading: false, error: action.payload };
         // Default value
         default:
             return state;

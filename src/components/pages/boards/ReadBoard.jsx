@@ -15,7 +15,7 @@ import JoinBoard from './JoinBoard';
 import MainMenu from '../nav/MainMenu'
 import IconButton from '../../reusable-ui/IconButton'
 
-import { /*getBoards,*/ getCreatedBoards, getJoinedBoards } from '../../../actions/boardActions';
+import { /*getBoards,*/ getCreatedBoards, getJoinedBoards, leaveBoard, deleteBoard } from '../../../actions/boardActions';
 import PaginateBoards from './PaginateBoards';
 
 import IconSwitcher from '../../reusable-ui/IconSwitcher';
@@ -94,11 +94,13 @@ export default function ReadBoard() {
   };
 
   const handleDeleteBoard = (boardID) => {
-    alert("vous avez tenté de supprimer le board ID " + boardID);
+    // alert("vous avez tenté de supprimer le board ID " + boardID);
+    dispatch(deleteBoard(boardID));
   };
 
   const handleLeaveBoard = (boardID) => {
-    alert("vous avez tenté de quitter le board ID " + boardID);
+    //alert("vous avez tenté de quitter le board ID " + boardID);
+    dispatch(leaveBoard(boardID));
   };
 
   const handlePageChange = (type, direction) => {
